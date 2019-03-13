@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}
+    Login
+{% endblock %}
+{% block content %}
+
+<style>
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #333;
+    }
+
+    li {
+        float: left;
+    }
+
+    li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+    }
+
+    li a:hover:not(.active) {
+        background-color: #111;
+    }
+
+    .active {
+        background-color: #4CAF50;
+    }
+
+</style>
+
+<h2><div align = "center">Log in to Crypto Wallet</div></h2><br>
+  {% if form.errors %}
+    <p style="color: red" id="error">Your username and password didn't match. Please try again.</p>
+  {% endif %}
+  <center><form method="post" >
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}" />
+    {% for field in form %}
+      <p>
+        <table>
+            <th class="tableLogin">{{ field.label_tag }}</th>
+            <td class="tableLogin">{{ field }}</td>
+        {% for error in field.errors %}
+          <p style="color: red" >{{ error }}</p>
+        {% endfor %}
+        {% if field.help_text %}
+          <p><small style="color: grey">{{ field.help_text }}</small></p>
+        {% endif %}
+    </table>
+      </p>
+    {% endfor %}
+    <button type="submit">Log in</button>
+    <br> <br>
+    <a href="{% url 'signup' %}">New to My Site? Sign up</a>
+  </form>
+      </center>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}
+    Add crypto currency
+{% endblock %}
+{% block content %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add crypto currency</title>
+</head>
+<body>
+    <h2>
+       <div align = "center">Add crypto currency</div>
+    </h2>
+    <center>
+    <form action="" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <p>
+                <table>
+                    <th class="tableAddRemove">{{ field.label_tag }}</th>
+                    <td class="tableAddRemove">{{ field }}</td>
+                </table>
+            </p>
+        {% endfor %}
+        <input type="submit" value="Add" />
+    </form>
+    </center>
+</body>
+</html>
+{% endblock %}

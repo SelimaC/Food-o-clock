@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}
+    Transaction Detail
+{% endblock %}
+{% block content %}
+
+{% load staticfiles %}
+
+<link rel="stylesheet" href="{% static 'style.css' %}">
+
+<h2>
+   <div align = "center">Transaction Detail</div>
+</h2>
+<center>
+<br>
+
+<table id="transactionDetailTable">
+    <tr>
+        <td class="headingDetailTable">Transaction ID:</td>
+        <td>{{transaction.code}}</td>
+    </tr>
+
+    <tr>
+        <td class="headingDetailTable">Date:</td>
+        <td>{{transaction.date}}</td>
+    </tr>
+
+    <tr>
+        <td class="headingDetailTable">Input Wallet:</td>
+        <td>{{transaction.inputWallet}}</td>
+    </tr>
+
+    <tr>
+        <td class="headingDetailTable">Ouput Wallet:</td>
+        <td>{{transaction.outputWallet}}</td>
+    </tr>
+
+    <tr>
+        <td class="headingDetailTable">Crypto Currency:</td>
+        <td>{{transaction.cryptoCurrency}}</td>
+    </tr>
+
+    <tr>
+        <td class="headingDetailTable"> Amount:</td>
+        <td>{{transaction.amount}}</td>
+    </tr>
+</table>
+
+{% endblock %}

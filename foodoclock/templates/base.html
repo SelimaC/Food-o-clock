@@ -1,0 +1,37 @@
+{% load staticfiles %}
+<link rel="stylesheet" href="{% static 'stylebase.css' %}">
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{% block title %}Inserisci il titolo{% endblock %}</title>
+  </head>
+  <body>
+    <header>
+      <h1>Food o'clock</h1>
+      {% if user.is_authenticated %}
+         <h3>Welcome, {{ user.username }}!</h3>
+        <ul>
+            <li><a href="{% url 'home' %}">Home</a></li>
+      <li><a href="{% url 'add' %}">Account</a></li>
+             <li><a href="{% url 'favourite' %}">Favourites</a></li>
+     <li style="float:right"><a class="active" href="{% url 'logout' %}">Logout</a></li>
+</ul>
+
+      {% else %}
+        <ul>
+            <li><a href="{% url 'login' %}">Login</a> <li>
+            <li style="float:right"><a class="active" href="{% url 'signup' %}">Signup</a></li>
+        </ul>
+      {% endif %}
+    <hr>
+    </header>
+    <main>
+      {% block content %}
+      {% endblock %}
+    </main>
+        {% block javascript %} {% endblock %}
+  </body>
+</html>

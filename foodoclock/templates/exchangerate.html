@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}
+    Exchange rate
+{% endblock %}
+{% block content %}
+
+{% load staticfiles %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Exchange rate</title>
+</head>
+<body>
+    <h2>
+       <div align = "center">Modify Exchange rate</div>
+    </h2>
+
+     <br>
+ <center>
+    <form action="" method="post" >
+        {% csrf_token %}
+        {% for field in form %}
+
+            <b>{{ field.label_tag }}</b>&emsp;
+            {{ field }}
+            &nbsp;
+        {% endfor %}
+        <input type="submit" value="Change" name="pref"/>
+    </form>
+    </center>
+<br><br><br>
+
+     <table style="width:80%">
+      <tr>
+        <th>Crypto Currency</th>
+        <th>Currency</th>
+        <th>Rate</th>
+      </tr>
+      {% for cryptoCurrency, currency, rate in rows %}
+      <tr>
+          <td>
+              {{cryptoCurrency}}
+          </td>
+          <td>
+              {{currency}}
+          </td>
+          <td>
+               <form action="" method="post" >
+                    {% csrf_token %}
+                    <input name="cryptoCurrency" type="hidden" value="{{ cryptoCurrency.code }}" />
+                    <input name="currency" type="hidden" value="{{ currency.code }}" />
+
+                    <input type="number" name="rate" value="{{ rate }}">
+                    <input type="submit" value="Modify" name="exc"/>
+             </form>
+          </td>
+
+      </tr>
+      {% endfor %}
+    </table>
+
+<br><br><br>
+</body>
+</html>
+{% endblock %}

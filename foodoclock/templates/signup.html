@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}
+    Sign Up
+{% endblock %}
+{% block content %}
+<style>
+  form {
+          margin: 0 auto;
+  }
+</style>
+
+<h2>
+    <div align = "center">Sign up</div>
+</h2>
+    <center>
+        <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <p>
+            <table>
+                <th class="tableSign">{{ field.label_tag }}</th>
+                <td class="tableSign">{{ field }}</td>
+
+            {% for error in field.errors %}
+                <p style="color: red" align="center">{{ error }}</p>
+            {% endfor %}
+            </table>
+            </p>
+        {% endfor %}
+        <button type="submit">Sign up</button>
+        </form>
+    </center>
+{% endblock %}

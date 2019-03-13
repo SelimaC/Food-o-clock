@@ -1,0 +1,77 @@
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #333;
+    }
+
+    li {
+        float: left;
+    }
+
+    li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+    }
+
+    li a:hover:not(.active) {
+        background-color: #111;
+    }
+
+    .active {
+        background-color: #4CAF50;
+    }
+
+    table {
+        border: 1px solid black;
+        border-collapse: collapse;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    tr,td,th {
+        border: 1px solid black;
+        text-align:center;
+        width: 100px;
+    }
+
+    th, td {
+        padding: 5px;
+    }
+    th { background-color: #4CAF50;  color: #FFFFFF}
+    tr:nth-child(even) {background-color: #f2f2f2}
+
+    #total {
+        font-weight: bold;
+        margin-left:20px;
+    }
+
+    #transactionFailedMessage {
+        font-weight: bold;
+        color: red;
+    }
+
+    #transactionDetailTable {
+        border: none;
+        border-collapse: collapse;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #transactionDetailTable td, tr {
+        font-size: 19px;
+        padding: 10px;
+        width: auto;
+        text-align: right;
+        border: none;
+        background-color: #FFFFFF
+    }
+
+    #transactionDetailTable .headingDetailTable {
+        font-weight: bold;
+        text-align: left;
+    }
