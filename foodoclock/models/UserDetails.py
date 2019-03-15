@@ -44,52 +44,5 @@ class UserDetails(models.Model):
     def getFavouritesByUser(cls, user):
         return Favourite.objects.filter(user=user)
 
-
-    def getTotal(self):
-        total = 0
-        for entry in self.getEntries():
-            total += entry.convertAmountToCurrency(self.preferredCurrency)
-        return total
-
-    def getEntries(self):
-        return EntryWallet.objects.filter(wallet = self)
-
-    def getEntryByCryptoCurrency(self, cryptoCurrency):
-        return EntryWallet.objects.filter(wallet = self).get(cryptoCurrency=cryptoCurrency)
-
-    def addCryptoCurrency(self, cryptoCurr, amount):
-        if amount < 0:
-            raise ValueError("amount negativo")
-        for entry in self.getEntries():
-            if entry.cryptoCurrency == cryptoCurr :
-                entry.amount += amount
-                entry.save()
-                return
-        EntryWallet(wallet = self, cryptoCurrency = cryptoCurr, amount = amount).save()
-        return
-
-    def removeCryptoCurrency(self, cryptoCurr, amount):
-        if amount < 0:
-            raise ValueError("amount negativo")
-        for entry in self.getEntries():
-            if entry.cryptoCurrency == cryptoCurr :
-                entry.amount -= amount
-                if entry.amount <= 0:
-                    entry.delete()
-                else:
-                    entry.save()
-                return
-        raise ValueError("cryptocurrency not present in wallet!")
-
-    def getTransactions(self, desc=True):
-        if desc:
-            return Transaction.objects.filter( Q(inputWallet=self) | Q(outputWallet=self) ).order_by('-date')
-        else:
-            return Transaction.objects.filter(Q(inputWallet=self) | Q(outputWallet=self)).order_by('date')
-
-    def getCryptoCurrencyList(self):
-        list = [e.cryptoCurrency.id for e in self.getEntries()]
-        return CryptoCurrency.objects.filter(id__in=list)
-
     def __unicode__(self):
         return self.code

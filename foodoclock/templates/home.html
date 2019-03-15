@@ -10,35 +10,10 @@
 
 <br><br>
 <div id="total">
-    Total: {{total}} {{preferredCurrencyCode}}
+    Hello
 </div>
 <br>
- {% if rows %}
-     <br>
-     <table style="width:80%">
-      <tr>
-        <th>Crypto Currency</th>
-        <th>Amount</th>
-      </tr>
-      {% for name, amount in rows %}
-      <tr>
-          <td>
-              {{name}} {{row.code}}
-          </td>
-          <td>
-              {{amount}}
-          </td>
-      </tr>
-      {% endfor %}
-    </table>
 
-{%else%}
-    <br>
-    <div align = "center">Your wallet is empty!<br><br>
-        {% load static %}
-        <img src="{% static "images/omino.jpg" %}" width="315px" height="393px" align="middle"/>
-    </div>
-{%endif%}
 
 
 {% endblock %}

@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import redirect, render
-from foodoclock.models.Wallet import Wallet
+from foodoclock.models.UserDetails import UserDetails
 
 
 def signup(request):
@@ -14,7 +14,7 @@ def signup(request):
             user = authenticate(username=username, password=raw_password)
             login(request, user)
 
-            Wallet.newWallet(user)
+            UserDetails.newUserDetails(user)
 
             return redirect('home')
     else:
