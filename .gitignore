@@ -7,6 +7,7 @@
 
 # User-specific stuff:
 .idea/**/workspace.xml
+.idea/vcs.xml
 .idea/**/tasks.xml
 .idea/dictionaries
 
@@ -55,8 +56,9 @@ fabric.properties
 ### PyCharm Patch ###
 # Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
 
+.DS_Store
+.idea
 *.iml
-.idea/*.iml
 # modules.xml
 .idea/misc.xml
 # *.ipr
