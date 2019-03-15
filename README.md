@@ -14,3 +14,8 @@ Synchronize the DB first:
 Run server at http://127.0.0.1:8000/ :
 
 `python manage.py runserver`
+
+# Admin access
+The url is http://127.0.0.1:8000/admin/
+username: `admin`
+password: `master2019`

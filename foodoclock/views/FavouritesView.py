@@ -6,4 +6,4 @@ from django.shortcuts import redirect, render
 @login_required
 def list(request):
 
-    return render(request, '../templates/favourites.html')
+    return render(request, '../templates/favourites.html', {'page': 3})

@@ -67,6 +67,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'foodoclock.wsgi.application'
+LOGOUT_REDIRECT_URL = 'login'
 
 
 # Database

@@ -1,29 +1,86 @@
 {% load staticfiles %}
 <link rel="stylesheet" href="{% static 'stylebase.css' %}">
 
+<style>
+    #logo {
+        background-color: #37474F;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #333;
+    }
+
+    li {
+        float: left;
+    }
+
+    li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+    }
+
+    li a:hover:not(.active) {
+        background-color: #00cca3;
+    }
+
+    .active {
+        background-color: #00cca3;
+    }
+
+</style>
 
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>{% block title %}Inserisci il titolo{% endblock %}</title>
+    <title>{% block title %}Food o'clock - Best search engine for recipes.{% endblock %}</title>
   </head>
   <body>
     <header>
-      <h1>Food o'clock</h1>
+        <div id="logo">
+            {% load static %}
+            <img src="{% static 'Logo.png' %}" align="middle"/>
+        </div>
       {% if user.is_authenticated %}
-         <h3>Welcome, {{ user.username }}!</h3>
-        <ul>
-            <li><a href="{% url 'home' %}">Home</a></li>
-      <li><a href="{% url 'add' %}">Account</a></li>
-             <li><a href="{% url 'favourite' %}">Favourites</a></li>
-     <li style="float:right"><a class="active" href="{% url 'logout' %}">Logout</a></li>
-</ul>
+         <ul>
+             {% if page <= 1 %}
+             <li><a class="active" href="{% url 'home' %}">Home</a></li>
+             <li><a href="{% url 'account' %}">Account</a></li>
+                 <li><a href="{% url 'favourites' %}">Favourites</a></li>
+             {%elif page <= 2%}
+
+                     <li><a href="{% url 'home' %}">Home</a></li>
+                     <li><a class="active" href="{% url 'account' %}">Account</a></li>
+                         <li><a href="{% url 'favourites' %}">Favourites</a></li>
+             {%else%}
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                     <li><a  href="{% url 'account' %}">Account</a></li>
+                         <li><a class="active" href="{% url 'favourites' %}">Favourites</a></li>
+
+             {%endif%}
+             <li style="float:right"><a href="{% url 'logout' %}">Logout</a></li>
+         </ul>
+        <h3>Welcome, {{ user.username }}!</h3>
 
       {% else %}
         <ul>
-            <li><a href="{% url 'login' %}">Login</a> <li>
-            <li style="float:right"><a class="active" href="{% url 'signup' %}">Signup</a></li>
+
+            {% if signup %}
+               <li><a href="{% url 'login' %}">Login</a> <li>
+               <li style="float:right"><a  class="active" href="{% url 'signup' %}">Signup</a></li>
+            {% else %}
+               <li style="float:right"><a href="{% url 'signup' %}">Signup</a></li>
+               <li><a  class="active" href="{% url 'login' %}">Login</a> <li>
+             {% endif %}
         </ul>
       {% endif %}
     <hr>

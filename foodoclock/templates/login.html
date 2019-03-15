@@ -26,16 +26,16 @@
     }
 
     li a:hover:not(.active) {
-        background-color: #111;
+        background-color: #00cca3;
     }
 
     .active {
-        background-color: #4CAF50;
+        background-color: #00cca3;
     }
 
 </style>
 
-<h2><div align = "center">Log in to Crypto Wallet</div></h2><br>
+<h2><div align = "center">Log in to Food o'clock</div></h2><br>
   {% if form.errors %}
     <p style="color: red" id="error">Your username and password didn't match. Please try again.</p>
   {% endif %}
@@ -58,7 +58,7 @@
     {% endfor %}
     <button type="submit">Log in</button>
     <br> <br>
-    <a href="{% url 'signup' %}">New to My Site? Sign up</a>
+    <a href="{% url 'signup' %}">New to this site? Sign up</a>
   </form>
       </center>
 {% endblock %}
