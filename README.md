@@ -11,6 +11,6 @@ Synchronize the DB first:
 `python manage.py makemigrations foodoclock`
 `python manage.py migrate foodoclock`
 
-Run server:
+Run server at http://127.0.0.1:8000/ :
 
-`python manage.py migrate`
+`python manage.py runserver`
