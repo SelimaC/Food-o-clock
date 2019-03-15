@@ -15,7 +15,7 @@ Run server at http://127.0.0.1:8000/ :
 
 `python manage.py runserver`
 
-# Admin access
+<!-- # Admin access
 The url is http://127.0.0.1:8000/admin/
 username: `admin`
-password: `master2019`
+password: `master2019` -->
