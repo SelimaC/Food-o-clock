@@ -20,6 +20,10 @@ from django.contrib.auth import views as auth_views
 from foodoclock.views import FavouritesView
 from foodoclock.views import AccountDetailsView
 from foodoclock.views import HomeView, SignUpView
+from django.contrib.staticfiles.urls import static
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from foodoclock import settings
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -30,3 +34,5 @@ urlpatterns = [
     url(r'^account/$', AccountDetailsView.show, name='account'),
     url(r'^favourites/$', FavouritesView.list, name='favourites')
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

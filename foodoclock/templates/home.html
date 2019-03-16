@@ -5,7 +5,9 @@
 {% block content %}
 
 {% load staticfiles %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="{% static 'style.css' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
@@ -26,6 +28,7 @@
         padding: 0;
         overflow: hidden;
         background-color: #333;
+
     }
 
     li {
@@ -59,8 +62,8 @@
       float: left;
       width: 100%;
       border: 3px solid #00cca3;
-      padding: 5px;
-      height: 36px;
+      padding: 6px;
+      height: 40px;
       border-radius: 3px;
       outline: none;
       color: #9DBFAF;
@@ -68,14 +71,14 @@
     }
 
     .searchTerm:focus{
-      color: #00cca3;
+      color: #37474F;;
     }
 
     .searchButton {
       position: absolute;
-      right: -50px;
+      right: -30px;
       width: 40px;
-      height: 36px;
+      height: 40px;
       border: 1px solid #00cca3;
       background: #00cca3;
       text-align: center;
@@ -87,12 +90,63 @@
 
 
     .wrap{
+
+        margin-top:30px;
       width: 50%;
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
     }
+    #results{
+
+       margin-left: 10%;
+    }
+
+    .recipe{
+        width: 90%;
+        background-color: #ffffff;
+    }
+    .recipe .ImageContainer{
+        float:left;
+        margin:20px;
+        margin-left:10px;
+
+    }
+    .recipe .title{
+        margin-top:20px;
+        font-size:20px;
+        font-weight: lighter;
+    }
+    .recipe .description{
+
+    }
+
+    a:link {
+        color:#00cca3;
+        text-decoration: none;
+    }
+
+    a:visited {
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    a:active {
+      text-decoration: underline;
+    }
+
+    .Rating {
+      float:right;
+      margin-top:-80px;
+    }
+    .checked {
+      color: #00cca3;
+    }
+
 </style>
 <br><br>
 <div id="homep">
@@ -104,8 +158,41 @@
              <button type="submit" class="searchButton">
                 <i class="fa fa-search"></i>
              </button>
+        </div>
     </div>
+
+
+    <br>
+    {% if rows %}
+     <br>
+     <div id="results">
+      {% for r in rows %}
+      <div class="recipe w3-panel w3-card">
+          <div class="ImageContainer"> <img src='{{r.image.url}}' width="150px" height="150px"/></div>
+          <div class="InformationContainer">
+              <div class="title">{{r.title}}</div>
+              <a href="{{r.link}}" target="_blank" title="See recipe">{{r.link}}</a>
+              <div class="description">{{r.meta_description}}</div>
+              <div class="Rating">
+                    <span class="fa fa-star  {% if r.rating >= 1 %} checked{% endif %} "></span>
+                    <span class="fa fa-star {% if r.rating >= 2 %} checked{% endif %}"></span>
+                    <span class="fa fa-star {% if r.rating >= 3 %} checked{% endif %}"></span>
+                    <span class="fa fa-star {% if r.rating >= 4 %} checked{% endif %}"></span>
+                    <span class="fa fa-star {% if r.rating >= 5 %} checked{% endif %}"></span>
+              </div>
+          </div>
+
+      </div>
+      {% endfor %}
     </div>
+
+    {%else%}
+        <br>
+        <div align = "center">No results have been found!<br><br>
+            {% load static %}
+            <img src="{% static 'confused.png' %}" width="315px" height="393px" align="middle"/>
+        </div>
+    {%endif%}
 </div>
 <br>
 

@@ -3,14 +3,14 @@ from django.db import models
 
 class Recipe(models.Model):
     auto_increment_id = models.AutoField(primary_key=True)
-    meal_type = models.CharField(max_length=50)
-    cousine = models.CharField(max_length=50)
-    diet = models.CharField(max_length=50)
-    title = models.CharField(max_length=50)
-    rating  = models.FloatField()
-    link = models.CharField(max_length=50)
-    corpus = models.FileField()
-    meta_description = models.CharField(max_length=50)
+    meal_type = models.CharField(max_length=100)
+    cousine = models.CharField(max_length=100)
+    diet = models.CharField(max_length=100)
+    title = models.CharField(max_length=100)
+    rating = models.FloatField()
+    link = models.CharField(max_length=200)
+    corpus = models.CharField(max_length=5000)
+    meta_description = models.CharField(max_length=500)
     preparation_time = models.IntegerField()
     image = models.ImageField()
 
@@ -42,6 +42,5 @@ class Recipe(models.Model):
     def getRecipesByDiet(cls, diet):
         return Recipe.objects.filter(diet=diet)
 
-
     def __unicode__(self):
-        return self.title
+        return "Title: " + str(self.title)

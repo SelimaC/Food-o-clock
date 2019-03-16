@@ -120,6 +120,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/login'
+MEDIA_ROOT = 'media'
+MEDIA_URL = '/media/'
 
 #Session time out
 SESSION_COOKIE_AGE = 3600 # one hour in seconds
