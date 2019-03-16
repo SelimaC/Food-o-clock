@@ -16,4 +16,6 @@ def home(request):
         print(request.POST['term'])
         return render(request, '../templates/home.html', {'page': 1})
     else:
-        return render(request, '../templates/home.html', {'page': 1, 'rows': recipes})
+        page = request.GET.get('page')
+        rows = paginator.get_page(page)
+        return render(request, '../templates/home.html', {'page': 1, 'rows': rows})
