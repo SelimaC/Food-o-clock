@@ -34,6 +34,20 @@
     .active {
         background-color: #00cca3;
     }
+
+    .signupButton {
+      margin-left: 160px;
+      width: 100px;
+      height: 36px;
+      border: 1px solid #00cca3;
+      background: #00cca3;
+      text-align: center;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 15px;
+      margin-bottom:30px;
+    }
 </style>
 
 <h2>
@@ -54,7 +68,7 @@
             </table>
             </p>
         {% endfor %}
-        <button type="submit">Sign up</button>
+        <button class="signupButton" type="submit">Sign up</button>
         </form>
     </center>
 {% endblock %}

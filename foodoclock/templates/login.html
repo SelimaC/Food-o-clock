@@ -33,6 +33,19 @@
         background-color: #00cca3;
     }
 
+    .loginButton {
+      margin-left: 130px;
+      width: 80px;
+      height: 36px;
+      border: 1px solid #00cca3;
+      background: #00cca3;
+      text-align: center;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
 </style>
 
 <h2><div align = "center">Log in to Food o'clock</div></h2><br>
@@ -56,7 +69,7 @@
     </table>
       </p>
     {% endfor %}
-    <button type="submit">Log in</button>
+    <button class="loginButton" type="submit">Log in</button>
     <br> <br>
     <a href="{% url 'signup' %}">New to this site? Sign up</a>
   </form>
