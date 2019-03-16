@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.shortcuts import render_to_response
 from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.core.paginator import Paginator
 from foodoclock.models.Recipe import Recipe
 
 @login_required
@@ -9,10 +10,8 @@ def home(request):
 
     recipes= Recipe.objects.all()
 
-    rows = []
-    for r in recipes:
+    paginator = Paginator(recipes, 10)  # Show 10 contacts per page
 
-        rows.append(r)
     if request.POST:
         print(request.POST['term'])
         return render(request, '../templates/home.html', {'page': 1})

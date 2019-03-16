@@ -43,5 +43,5 @@ class UserDetails(models.Model):
     def getFavouritesByUser(cls, user):
         return Favourite.objects.filter(user=user)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.code
