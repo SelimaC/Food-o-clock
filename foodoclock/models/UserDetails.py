@@ -3,6 +3,8 @@ import random
 import string
 
 from django.contrib.auth.models import User
+from foodoclock.models.Diet import Diet
+from foodoclock.models.Cousine import Cousine
 from django.db import models
 
 from foodoclock.models.Favourite import Favourite
@@ -10,8 +12,8 @@ from foodoclock.models.Favourite import Favourite
 
 class UserDetails(models.Model):
     code = models.CharField(max_length=50)
-    cousine = models.CharField(max_length=50)
-    diet = models.CharField(max_length=50)
+    cousine = models.ForeignKey(Cousine, on_delete=models.CASCADE)
+    diet = models.ForeignKey(Diet, on_delete=models.CASCADE)
     country = models.CharField(max_length=50)
     age = models.IntegerField()
     user = models.OneToOneField(User, unique=True, on_delete=models.PROTECT)
