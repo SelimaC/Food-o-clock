@@ -23,7 +23,7 @@
         padding: 0;
         overflow: hidden;
     }
-    ul {
+    header .header {
         list-style-type: none;
         margin: 0;
         padding: 0;
@@ -32,11 +32,11 @@
 
     }
 
-    li {
+    .header li {
         float: left;
     }
 
-    li a {
+    .header li a {
         display: block;
         color: white;
         text-align: center;
@@ -44,11 +44,11 @@
         text-decoration: none;
     }
 
-    li a:hover:not(.active) {
+    .header li a:hover:not(.active) {
         background-color: #00cca3;
     }
 
-    .active {
+    .header .active {
         background-color: #00cca3;
     }
 
@@ -142,7 +142,7 @@
 
     .Rating {
       float:right;
-      margin-top:-80px;
+      margin-top:-120px;
     }
     .checked {
       color: #00cca3;
@@ -247,6 +247,12 @@
               <div class="title">{{r.title}}</div>
               <a href="{{r.link}}" target="_blank" title="See recipe">{{r.link}}</a>
               <div class="description">{{r.meta_description}}</div>
+              <div>
+                  {% for i in r.ingredients_list %}
+                  {{i.name}} -  
+                  {% endfor %}
+              </div>
+
               <div class="Rating">
                     <span class="fa fa-star  {% if r.rating >= 1 %} checked{% endif %} "></span>
                     <span class="fa fa-star {% if r.rating >= 2 %} checked{% endif %}"></span>

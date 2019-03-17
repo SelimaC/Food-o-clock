@@ -11,8 +11,11 @@ def home(request):
     recipes= Recipe.objects.all()
     total=len(recipes)
     sort_options=['Sort by', 'Title', 'Preparation time']
+    for r in recipes:
+        r.ingredients_list=r.ingredients.all()
 
     paginator = Paginator(recipes, 10)  # Show 10 contacts per page
+
 
     if request.POST:
         print(request.POST['term'])
@@ -20,4 +23,4 @@ def home(request):
     else:
         page = request.GET.get('page')
         rows = paginator.get_page(page)
-        return render(request, '../templates/home.html', {'page': 1, 'rows': rows,'total':total, 'sort':sort_options})
+        return render(request, '../templates/home.html', {'page': 1,'rows': rows,'total':total, 'sort':sort_options})
