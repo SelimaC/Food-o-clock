@@ -5,6 +5,7 @@
 {% block content %}
 
 {% load staticfiles %}
+<script src="{% static 'searchController.js' %}"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -147,7 +148,56 @@
       color: #00cca3;
     }
 
+    .Sort{
+        margin-right:15%;
+        float:right;
+    }
+
+    .Sort select{
+        outline: none;
+        height: 36px;
+        font-size: 15px;
+        padding:5px;
+        border-radius: 5px;
+    }
+
+    .Total{
+        margin-left:15%;
+        float:left;
+    }
+
+    .filterButton:hover {
+        background-color: #00997a;
+    }
+
+    .filterButton{
+      outline: none;
+      margin-left:15px;
+      width: 160px;
+      height: 36px;
+      border: 1px solid #00cca3;
+      background: #00cca3;
+      text-align: center;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+
+    .Options{
+
+    }
+    .content {
+      padding: 0 18px;
+      display: none;
+      overflow: hidden;
+      margin-top:5%;
+    }
+
 </style>
+
+
 <br><br>
 <div id="homep">
 
@@ -162,9 +212,30 @@
     </div>
 
 
+
     <br>
     {% if rows %}
-     <br>
+    </br>   </br>
+    <div class="Options" align="middle">
+        <div class="Total"> Search Results ({{total}} results found)</div>
+        <div class="Sort list">
+            <select id="sort">
+                {% for i in sort %}
+                <option value="{{ i }}">{{ i }}</option>
+                {% endfor %}
+            </select>
+
+            <button class="collapsible filterButton">Advanced Filters</button>
+
+        </div>
+
+    </div>
+    <div class="content" align="middle">
+              <p>Put filters here</p>
+    </div>
+
+    <br>
+    <hr>
      <div id="results">
       {% for r in rows %}
       <div class="recipe w3-panel w3-card">

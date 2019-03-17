@@ -9,6 +9,8 @@ from foodoclock.models.Recipe import Recipe
 def home(request):
 
     recipes= Recipe.objects.all()
+    total=len(recipes)
+    sort_options=['Sort by', 'Title', 'Preparation time']
 
     paginator = Paginator(recipes, 10)  # Show 10 contacts per page
 
@@ -18,4 +20,4 @@ def home(request):
     else:
         page = request.GET.get('page')
         rows = paginator.get_page(page)
-        return render(request, '../templates/home.html', {'page': 1, 'rows': rows})
+        return render(request, '../templates/home.html', {'page': 1, 'rows': rows,'total':total, 'sort':sort_options})
