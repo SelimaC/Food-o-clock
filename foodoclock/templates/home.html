@@ -278,15 +278,18 @@
 <div id="homep">
 
      <br>
+    <form action="" method="post">
+        {% csrf_token %}
     <div class="wrap">
         <div class="search">
-             <input type="text" class="searchTerm" placeholder="Search your recipes...">
+             <input type="text" class="searchTerm" name="term" placeholder="Search your recipes...">
              <button type="submit" class="searchButton">
                 <i class="fa fa-search"></i>
              </button>
         </div>
     </div>
 
+    </form>
 
 
     <br>

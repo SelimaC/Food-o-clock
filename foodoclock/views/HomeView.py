@@ -21,12 +21,15 @@ def home(request):
 
     cuisines=Cuisine.objects.all()
     meals=MealType.objects.all()
+    page = request.GET.get('page')
+    rows = paginator.get_page(page)
 
 
     if request.POST:
-        print(request.POST['term'])
-        return render(request, '../templates/home.html', {'page': 1})
+        term= request.POST['term']
+        return render(request, '../templates/home.html',
+                      {'page': 1, 'rows': rows, 'total': total, 'sort': sort_options, 'cuisine': cuisines,
+                       'meals': meals, 'term':term})
+
     else:
-        page = request.GET.get('page')
-        rows = paginator.get_page(page)
         return render(request, '../templates/home.html', {'page': 1,'rows': rows,'total':total, 'sort':sort_options,'cuisine':cuisines,'meals':meals})
