@@ -20,6 +20,7 @@ class Recipe(models.Model):
     preparation_time = models.IntegerField()
     image = models.ImageField()
     ingredients = models.ManyToManyField(Ingredient, blank=True)
+    click=models.IntegerField(default=0)
 
     @classmethod
     def getRecipeById(cls, id):

@@ -147,6 +147,9 @@
     .checked {
       color: #00cca3;
     }
+    h5 {
+     color: #00997a;
+    }
 
     .Sort{
         margin-right:15%;
@@ -184,6 +187,7 @@
       font-size: 15px;
     }
 
+    .left{float:left; width:33%;}
 
     .Options{
 
@@ -193,10 +197,79 @@
       display: none;
       overflow: hidden;
       margin-top:5%;
+      margin-left: 10%;
+      width:90%
     }
 
     .pagination{
         margin-right:10%;
+    }
+
+    .container {
+      display: block;
+      position: relative;
+      padding-left: 35px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      font-size: 15px;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    /* Hide the browser's default checkbox */
+    .container input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
+
+    /* Create a custom checkbox */
+    .checkmark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 20px;
+      width: 20px;
+      background-color: #ccc;
+    }
+
+    /* On mouse-over, add a grey background color */
+    .container:hover input ~ .checkmark {
+      background-color: #00cca3;
+    }
+
+    /* When the checkbox is checked, add a blue background */
+    .container input:checked ~ .checkmark {
+      background-color: #00cca3;
+    }
+
+    /* Create the checkmark/indicator (hidden when not checked) */
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+
+    /* Show the checkmark when checked */
+    .container input:checked ~ .checkmark:after {
+      display: block;
+    }
+
+    /* Style the checkmark/indicator */
+    .container .checkmark:after {
+      left: 9px;
+      top: 5px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 3px 3px 0;
+      -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      transform: rotate(45deg);
     }
 </style>
 
@@ -234,30 +307,39 @@
 
     </div>
     <div class="content" align="middle">
-        <div id="cuisines">
+        <div id="cuisines" class="left">
             <h5>Cuisine</h5>
         {% for c in cuisine %}
-          <input type="checkbox" id="cuisine" name="cuisine" value="{{c.cuisine}}">
-          <label for="cuisine">{{c.cuisine}}</label>
+         <label class="container">{{c.cuisine}}
+              <input type="checkbox" value="{{c.cuisine}}">
+              <span class="checkmark"></span>
+            </label>
         {% endfor%}
         </div>
 
-        <div id="meals">
+        <div id="meals" class="left">
              <h5>Course Types</h5>
         {% for m in meals %}
-          <input type="checkbox" id="meal" name="meal" value="{{m.type}}">
-          <label for="meal">{{m.type}}</label>
+            <label class="container">{{m.type}}
+              <input type="checkbox" value="{{m.type}}">
+              <span class="checkmark"></span>
+            </label>
         {% endfor%}
         </div>
 
-        <div id="difficulties">
+        <div id="difficulties" class="left">
             <h5>Difficulty</h5>
-          <input type="checkbox" id="difficulty1" name="difficulty" value="Beginner">
-          <label for="difficulty1">Beginner</label>
-            <input type="checkbox" id="difficulty2" name="difficulty" value="Intermediate">
-          <label for="difficulty2">Intermediate</label>
-            <input type="checkbox" id="difficulty3" name="difficulty" value="Advanced">
-          <label for="difficulty3">Advanced</label>
+            <label class="container">Beginners
+              <input type="checkbox" >
+              <span class="checkmark"></span>
+            </label>
+           <label class="container">Intermediate
+              <input type="checkbox">
+              <span class="checkmark"></span>
+            </label><label class="container">Advanced
+              <input type="checkbox">
+              <span class="checkmark"></span>
+            </label>
         </div>
     </div>
 
