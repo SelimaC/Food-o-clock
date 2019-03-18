@@ -29,7 +29,7 @@ def home(request):
         term= request.POST['term']
         return render(request, '../templates/home.html',
                       {'page': 1, 'rows': rows, 'total': total, 'sort': sort_options, 'cuisine': cuisines,
-                       'meals': meals, 'term':term})
+                       'meals': meals, 'term': term})
 
     else:
         return render(request, '../templates/home.html', {'page': 1,'rows': rows,'total':total, 'sort':sort_options,'cuisine':cuisines,'meals':meals})
