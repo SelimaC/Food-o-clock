@@ -14,7 +14,7 @@
 <style>
     main {
          background-color: #f2f2f2;
-         height: 1000px;
+         height: 1500px;
     }
 
     #logo {
@@ -235,7 +235,7 @@
     </div>
     <div class="content" align="middle">
         <div id="cuisines">
-            <h3>Cuisine</h3>
+            <h5>Cuisine</h5>
         {% for c in cuisine %}
           <input type="checkbox" id="cuisine" name="cuisine" value="{{c.cuisine}}">
           <label for="cuisine">{{c.cuisine}}</label>
@@ -243,6 +243,7 @@
         </div>
 
         <div id="meals">
+             <h5>Course Types</h5>
         {% for m in meals %}
           <input type="checkbox" id="meal" name="meal" value="{{m.type}}">
           <label for="meal">{{m.type}}</label>
@@ -250,6 +251,7 @@
         </div>
 
         <div id="difficulties">
+            <h5>Difficulty</h5>
           <input type="checkbox" id="difficulty1" name="difficulty" value="Beginner">
           <label for="difficulty1">Beginner</label>
             <input type="checkbox" id="difficulty2" name="difficulty" value="Intermediate">
