@@ -13,7 +13,7 @@
 <style>
     main {
         background-color: #f2f2f2;
-        height: 1500px;
+        height: 4500px;
     }
 
     #logo {
@@ -245,7 +245,7 @@
         {% csrf_token %}
         <div class="wrap">
             <div class="search">
-                 <input type="text" class="searchTerm" name="term" placeholder="Search your recipes...">
+                 <input type="text" value="{{query}}" class="searchTerm" name="query" placeholder="Search your recipes...">
                  <button type="submit" class="searchButton">
                     <i class="fa fa-search"></i>
                  </button>
