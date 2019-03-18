@@ -63,16 +63,19 @@ def RecipeInfoExt(url, name, cat, sub_cat):
     #prep-time and directions
     directions=""
     preps = soup.find("div", class_= "directions--section")
-    try:
-        for i in preps.find_all("li", class_="prepTime__item")[:3]:
-            if "aria-label" in i.attrs and ":" in i.get("aria-label"):
+    for i in preps.find_all("li", class_="prepTime__item")[:3]:
+        if "aria-label" in i.attrs and ":" in i.get("aria-label"):
+            try:
                 infos[i.get("aria-label").split(":")[0]] = i.get("aria-label").split(":")[1].strip()
-                #print(i.get("aria-label").split(":")[1])
-                #print("--------------------")
-        for j in preps.find_all("span", class_="recipe-directions__list--item"):
+            except:
+                print(name)
+                return
+    for j in preps.find_all("span", class_="recipe-directions__list--item"):
+        try:
             directions += j.text.strip()
-    except:
-        print(name)
+        except:
+            print(name)
+            return
     infos["directions"] = directions
     
     
@@ -121,6 +124,7 @@ def ReciepExtract(categ, pagenum):
                 link = recps.find("a").get("href")
                 d_name = recps.find("span", class_="fixed-recipe-card__title-link").text
                 total.update(RecipeInfoExt(link, d_name, categ, sub_cat[1]))
+    #this part is to scrape the "vegan" and "vegetarian" sub category which is under "Cooking Style" main category.
     if categ == "Diet & Health":
         for sub_cat in pages["Cooking Style"]:
             if sub_cat[1] == "Vegan Recipes" or sub_cat[1] =="Vegetarian Recipes":
@@ -167,23 +171,37 @@ def IntersecOfSets(arr1, arr2, arr3):
     return final_list
 
 
+ 
+def Commonize(comm_list, comm1, comm2):
+    common_1 = comm1.loc[comm1['dish_name'].isin(comm_list)]
+    common_2 = comm2.loc[comm2['dish_name'].isin(comm_list)]
+    for i,dish in enumerate([j for j in common_1["dish_name"]]):
+        common_1.loc[common_1.index[i], "World Cusine"] = common_2.loc[common_2["dish_name"] == dish]["World Cuisine"].values[0]
+        
+    return common_1
+
+
+#The main url to crawl
 url = "https://www.allrecipes.com/recipes/"
+
+#All the main categories and corresponding sub categories
 pages = CategoryExtract(url)
 
-#CATEGORY NAMES TO FEED IN "ReciepExtract" FUNCTION: 
+#MAIN CATEGORY NAMES TO FEED IN "ReciepExtract" FUNCTION: 
 #['Meal Type', 'Ingredient', 'Diet & Health', 'Seasonal', 'Dish Type', 'Cooking Style', 'World Cuisine', 'Special Collections']
-meal = ReciepExtract("Meal Type",5)
-diet = ReciepExtract("Diet & Health",5)
-cuisine = ReciepExtract("World Cuisine",5)
+meal = ReciepExtract("Meal Type",10)
+diet = ReciepExtract("Diet & Health",10)
+cuisine = ReciepExtract("World Cuisine",10)
+
+common_recip_mecu = IntersecOfSets([i for i in meal["dish_name"]], [i for i in meal["dish_name"]], [i for i in cuisine["dish_name"]])
+
+comm_dish = Commonize(common_recip_mecu, meal, cuisine)
 
 with pd.ExcelWriter('Recipes.xlsx') as writer:
     meal.to_excel(writer, sheet_name='Meal')
     diet.to_excel(writer, sheet_name='Diet')
     cuisine.to_excel(writer, sheet_name='Cusine')
-
-common_recip_all = IntersecOfSets([i for i in diet["dish_name"]], [i for i in meal["dish_name"]], [i for i in cuisine["dish_name"]])
-common_recip_mecu = IntersecOfSets([i for i in meal["dish_name"]], [i for i in meal["dish_name"]], [i for i in cuisine["dish_name"]])
-
+    comm_dish.to_excel(writer, sheet_name='Common_dish')
 
 
 
