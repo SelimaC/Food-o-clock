@@ -251,7 +251,7 @@
                  </button>
             </div>
         </div>
-
+    </form>
 
 
 
@@ -263,7 +263,7 @@
             <div class="Sort list">
                 <select id="sort">
                     {% for i in sort %}
-                        <option value="{{ i }}">{{ i }}</option>
+                        <option name="sort" value="{{ i }}">{{ i }}</option>
                     {% endfor %}
                 </select>
                 <button class="collapsible filterButton">Advanced Filters</button>
@@ -274,7 +274,7 @@
                 <h5>Cuisine</h5>
                 {% for c in cuisine %}
                     <label class="container">{{c.cuisine}}
-                      <input type="checkbox" value="{{c.cuisine}}">
+                      <input type="checkbox" name="cuisine" value="{{c.cuisine}}">
                       <span class="checkmark"></span>
                     </label>
                 {% endfor%}
@@ -284,7 +284,7 @@
                 <h5>Course Types</h5>
                 {% for m in meals %}
                     <label class="container">{{m.type}}
-                      <input type="checkbox" value="{{m.type}}">
+                      <input type="checkbox" name="meal" value="{{m.type}}">
                       <span class="checkmark"></span>
                     </label>
                 {% endfor%}
@@ -293,19 +293,19 @@
             <div id="difficulties" class="left">
                 <h5>Difficulty</h5>
                 <label class="container">Beginners
-                  <input type="checkbox" >
+                  <input type="checkbox" name="difficulty">
                   <span class="checkmark"></span>
                 </label>
                 <label class="container">Intermediate
-                  <input type="checkbox">
+                  <input type="checkbox" name="difficulty">
                   <span class="checkmark"></span>
                 </label><label class="container">Advanced
-                  <input type="checkbox">
+                  <input type="checkbox" name="difficulty">
                   <span class="checkmark"></span>
                 </label>
             </div>
         </div>
-    </form>
+
 
     <br><hr>
     <div  id="results">
