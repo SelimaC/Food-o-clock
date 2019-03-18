@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}
+    Login
+{% endblock %}
+{% block content %}
+
+<style>
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #333;
+    }
+
+    li {
+        float: left;
+    }
+
+    li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+    }
+
+    li a:hover:not(.active) {
+        background-color: #00cca3;
+    }
+
+    .active {
+        background-color: #00cca3;
+    }
+
+    .loginButton {
+      margin-left: 130px;
+      width: 80px;
+      height: 36px;
+      border: 1px solid #00cca3;
+      background: #00cca3;
+      text-align: center;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+</style>
+
+<h2><div align = "center">Log in to Food o'clock</div></h2><br>
+  {% if form.errors %}
+    <p style="color: red" id="error">Your username and password didn't match. Please try again.</p>
+  {% endif %}
+  <center><form method="post" >
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}" />
+    {% for field in form %}
+      <p>
+        <table>
+            <th class="tableLogin">{{ field.label_tag }}</th>
+            <td class="tableLogin">{{ field }}</td>
+        {% for error in field.errors %}
+          <p style="color: red" >{{ error }}</p>
+        {% endfor %}
+        {% if field.help_text %}
+          <p><small style="color: grey">{{ field.help_text }}</small></p>
+        {% endif %}
+    </table>
+      </p>
+    {% endfor %}
+    <button class="loginButton" type="submit">Log in</button>
+    <br> <br>
+    <a href="{% url 'signup' %}">New to this site? Sign up</a>
+  </form>
+      </center>
+{% endblock %}

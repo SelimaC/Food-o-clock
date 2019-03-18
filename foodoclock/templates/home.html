@@ -1,0 +1,321 @@
+{% extends 'base.html' %}
+{% block title %}
+    Homepage
+{% endblock %}
+{% block content %}
+
+{% load staticfiles %}
+<script src="{% static 'searchController.js' %}"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+    main {
+         background-color: #f2f2f2;
+         height: 1000px;
+    }
+
+    #logo {
+        background-color: #37474F;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+    header .header {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #333;
+
+    }
+
+    .header li {
+        float: left;
+    }
+
+    .header li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+    }
+
+    .header li a:hover:not(.active) {
+        background-color: #00cca3;
+    }
+
+    .header .active {
+        background-color: #00cca3;
+    }
+
+
+    .search {
+      margin-top: 20px;
+      width: 100%;
+      position: relative
+    }
+
+    .searchTerm {
+      float: left;
+      width: 100%;
+      border: 3px solid #00cca3;
+      padding: 6px;
+      height: 40px;
+      border-radius: 3px;
+      outline: none;
+      color: #9DBFAF;
+      font-size: 18px;
+    }
+
+    .searchTerm:focus{
+      color: #37474F;;
+    }
+
+    .searchButton {
+      position: absolute;
+      right: -30px;
+      width: 40px;
+      height: 40px;
+      border: 1px solid #00cca3;
+      background: #00cca3;
+      text-align: center;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+
+    .wrap{
+
+        margin-top:30px;
+      width: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    #results{
+
+       margin-left: 10%;
+    }
+
+    .recipe{
+        width: 90%;
+        background-color: #ffffff;
+    }
+    .recipe .ImageContainer{
+        float:left;
+        margin:20px;
+        margin-left:10px;
+
+    }
+    .recipe .title{
+        margin-top:20px;
+        font-size:20px;
+        font-weight: lighter;
+    }
+    .recipe .description{
+        margin-right: 20px;
+    }
+
+    .recipe a:link {
+        color:#00cca3;
+        text-decoration: none;
+    }
+
+    .recipe a:visited {
+      text-decoration: none;
+    }
+
+    .recipe a:hover {
+      text-decoration: underline;
+    }
+
+    .recipe a:active {
+      text-decoration: underline;
+    }
+
+    .Rating {
+      float:right;
+      margin-top:-120px;
+    }
+    .checked {
+      color: #00cca3;
+    }
+
+    .Sort{
+        margin-right:15%;
+        float:right;
+    }
+
+    .Sort select{
+        outline: none;
+        height: 36px;
+        font-size: 15px;
+        padding:5px;
+        border-radius: 5px;
+    }
+
+    .Total{
+        margin-left:15%;
+        float:left;
+    }
+
+    .filterButton:hover {
+        background-color: #00997a;
+    }
+
+    .filterButton{
+      outline: none;
+      margin-left:15px;
+      width: 160px;
+      height: 36px;
+      border: 1px solid #00cca3;
+      background: #00cca3;
+      text-align: center;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+
+    .Options{
+
+    }
+    .content {
+      padding: 0 18px;
+      display: none;
+      overflow: hidden;
+      margin-top:5%;
+    }
+
+    .pagination{
+        margin-right:10%;
+    }
+</style>
+
+
+<br><br>
+<div id="homep">
+
+     <br>
+    <div class="wrap">
+        <div class="search">
+             <input type="text" class="searchTerm" placeholder="Search your recipes...">
+             <button type="submit" class="searchButton">
+                <i class="fa fa-search"></i>
+             </button>
+        </div>
+    </div>
+
+
+
+    <br>
+    {% if rows %}
+    </br>   </br>
+    <div class="Options" align="middle">
+        <div class="Total"> Search Results ({{total}} results found)</div>
+        <div class="Sort list">
+            <select id="sort">
+                {% for i in sort %}
+                <option value="{{ i }}">{{ i }}</option>
+                {% endfor %}
+            </select>
+
+            <button class="collapsible filterButton">Advanced Filters</button>
+
+        </div>
+
+    </div>
+    <div class="content" align="middle">
+        <div id="cuisines">
+            <h3>Cuisine</h3>
+        {% for c in cuisine %}
+          <input type="checkbox" id="cuisine" name="cuisine" value="{{c.cuisine}}">
+          <label for="cuisine">{{c.cuisine}}</label>
+        {% endfor%}
+        </div>
+
+        <div id="meals">
+        {% for m in meals %}
+          <input type="checkbox" id="meal" name="meal" value="{{m.type}}">
+          <label for="meal">{{m.type}}</label>
+        {% endfor%}
+        </div>
+
+        <div id="difficulties">
+          <input type="checkbox" id="difficulty1" name="difficulty" value="Beginner">
+          <label for="difficulty1">Beginner</label>
+            <input type="checkbox" id="difficulty2" name="difficulty" value="Intermediate">
+          <label for="difficulty2">Intermediate</label>
+            <input type="checkbox" id="difficulty3" name="difficulty" value="Advanced">
+          <label for="difficulty3">Advanced</label>
+        </div>
+    </div>
+
+    <br>
+    <hr>
+     <div id="results">
+      {% for r in rows %}
+      <div class="recipe w3-panel w3-card">
+          <div class="ImageContainer"> <img src='{{r.image.url}}' width="150px" height="150px"/></div>
+          <div class="InformationContainer">
+              <div class="title">{{r.title}}</div>
+              <a href="{{r.link}}" target="_blank" title="See recipe">{{r.link}}</a>
+              <div class="description">{{r.meta_description}}</div>
+              <div>
+                  {% for i in r.ingredients_list %}
+                  {{i.name}} -
+                  {% endfor %}
+              </div>
+
+              <div class="Rating">
+                    <span class="fa fa-star  {% if r.rating >= 1 %} checked{% endif %} "></span>
+                    <span class="fa fa-star {% if r.rating >= 2 %} checked{% endif %}"></span>
+                    <span class="fa fa-star {% if r.rating >= 3 %} checked{% endif %}"></span>
+                    <span class="fa fa-star {% if r.rating >= 4 %} checked{% endif %}"></span>
+                    <span class="fa fa-star {% if r.rating >= 5 %} checked{% endif %}"></span>
+              </div>
+          </div>
+
+      </div>
+      {% endfor %}
+
+      <div class="pagination" align="middle">
+        <span class="step-links">
+        {% if rows.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ rows.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ rows.number }} of {{ rows.paginator.num_pages }}.
+        </span>
+
+        {% if rows.has_next %}
+            <a href="?page={{ rows.next_page_number }}">next</a>
+            <a href="?page={{ rows.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+        </span>
+      </div>
+    </div>
+
+    {%else%}
+        <br>
+        <div align = "center">No results have been found!<br><br>
+            {% load static %}
+            <img src="{% static 'no-results.png' %}" width="400px" height="340px" align="middle"/>
+        </div>
+    {%endif%}
+</div>
+<br>
+
+
+
+{% endblock %}
