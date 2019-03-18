@@ -4,7 +4,7 @@ import string
 
 from django.contrib.auth.models import User
 from foodoclock.models.Diet import Diet
-from foodoclock.models.Cousine import Cousine
+from foodoclock.models.Cuisine import Cuisine
 from django.db import models
 
 from foodoclock.models.Favourite import Favourite
@@ -12,7 +12,7 @@ from foodoclock.models.Favourite import Favourite
 
 class UserDetails(models.Model):
     code = models.CharField(max_length=50)
-    cousine = models.ForeignKey(Cousine, on_delete=models.CASCADE)
+    cuisine = models.ForeignKey(Cuisine, on_delete=models.CASCADE)
     diet = models.ForeignKey(Diet, on_delete=models.CASCADE)
     country = models.CharField(max_length=50)
     age = models.IntegerField()
@@ -24,7 +24,7 @@ class UserDetails(models.Model):
         return "".join([random.choice(string.ascii_letters) for c in range(length)]).upper() + hash
 
     @classmethod
-    def newUserDetails(cls, user, cousine, diet, country, age):
+    def newUserDetails(cls, user, cuisine, diet, country, age):
         flag = True
         while flag:
             code = UserDetails.make_random_code(user.username)
@@ -34,7 +34,7 @@ class UserDetails(models.Model):
             except UserDetails.DoesNotExist:
                 flag=False
 
-        details = UserDetails(code=code, cousine=cousine, diet=diet, country=country, age=age, user=user)
+        details = UserDetails(code=code, cuisine=cuisine, diet=diet, country=country, age=age, user=user)
         details.save()
 
     @classmethod

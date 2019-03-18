@@ -2,14 +2,14 @@ from django.db import models
 from foodoclock.models.Ingredient import Ingredient
 from foodoclock.models.MealType import MealType
 from foodoclock.models.Diet import Diet
-from foodoclock.models.Cousine import Cousine
+from foodoclock.models.Cuisine import Cuisine
 
 
 class Recipe(models.Model):
     auto_increment_id = models.AutoField(primary_key=True)
 
     meal_type = models.ForeignKey(MealType, on_delete=models.CASCADE)
-    cousine = models.ForeignKey(Cousine, on_delete=models.CASCADE)
+    cuisine = models.ForeignKey(Cuisine, on_delete=models.CASCADE)
     diet = models.ForeignKey(Diet, on_delete=models.CASCADE)
 
     title = models.CharField(max_length=200)
@@ -34,12 +34,9 @@ class Recipe(models.Model):
         return Recipe.objects.get(link=link)
 
     @classmethod
-    def getRecipesByCousine(cls, cousine):
-        return Recipe.objects.filter(cousine=cousine)
+    def getRecipesByCusine(cls, cuisine):
+        return Recipe.objects.filter(cusine=cuisine)
 
-    @classmethod
-    def getRecipesByCousine(cls, cousine):
-        return Recipe.objects.filter(cousine=cousine)
 
     @classmethod
     def getRecipesByMealType(cls, meal):

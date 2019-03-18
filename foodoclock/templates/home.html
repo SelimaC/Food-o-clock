@@ -234,7 +234,29 @@
 
     </div>
     <div class="content" align="middle">
-              <p>Put filters here</p>
+        <div id="cuisines">
+            <h3>Cuisine</h3>
+        {% for c in cuisine %}
+          <input type="checkbox" id="cuisine" name="cuisine" value="{{c.cuisine}}">
+          <label for="cuisine">{{c.cuisine}}</label>
+        {% endfor%}
+        </div>
+
+        <div id="meals">
+        {% for m in meals %}
+          <input type="checkbox" id="meal" name="meal" value="{{m.type}}">
+          <label for="meal">{{m.type}}</label>
+        {% endfor%}
+        </div>
+
+        <div id="difficulties">
+          <input type="checkbox" id="difficulty1" name="difficulty" value="Beginner">
+          <label for="difficulty1">Beginner</label>
+            <input type="checkbox" id="difficulty2" name="difficulty" value="Intermediate">
+          <label for="difficulty2">Intermediate</label>
+            <input type="checkbox" id="difficulty3" name="difficulty" value="Advanced">
+          <label for="difficulty3">Advanced</label>
+        </div>
     </div>
 
     <br>
