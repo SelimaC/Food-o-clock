@@ -3,7 +3,6 @@
     Homepage
 {% endblock %}
 {% block content %}
-
 {% load staticfiles %}
 <script src="{% static 'searchController.js' %}"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -13,8 +12,8 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
     main {
-         background-color: #f2f2f2;
-         height: 1000px;
+        background-color: #f2f2f2;
+        height: 4500px;
     }
 
     #logo {
@@ -31,11 +30,9 @@
         background-color: #333;
 
     }
-
     .header li {
         float: left;
     }
-
     .header li a {
         display: block;
         color: white;
@@ -43,67 +40,55 @@
         padding: 14px 16px;
         text-decoration: none;
     }
-
     .header li a:hover:not(.active) {
         background-color: #00cca3;
     }
-
     .header .active {
         background-color: #00cca3;
     }
-
-
     .search {
-      margin-top: 20px;
-      width: 100%;
-      position: relative
+        margin-top: 20px;
+        width: 100%;
+        position: relative
     }
-
     .searchTerm {
-      float: left;
-      width: 100%;
-      border: 3px solid #00cca3;
-      padding: 6px;
-      height: 40px;
-      border-radius: 3px;
-      outline: none;
-      color: #9DBFAF;
-      font-size: 18px;
+        float: left;
+        width: 100%;
+        border: 3px solid #00cca3;
+        padding: 6px;
+        height: 40px;
+        border-radius: 3px;
+        outline: none;
+        color: #9DBFAF;
+        font-size: 18px;
     }
-
     .searchTerm:focus{
-      color: #37474F;;
+        color: #37474F;;
     }
-
     .searchButton {
-      position: absolute;
-      right: -30px;
-      width: 40px;
-      height: 40px;
-      border: 1px solid #00cca3;
-      background: #00cca3;
-      text-align: center;
-      color: #fff;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 20px;
+        position: absolute;
+        right: -30px;
+        width: 40px;
+        height: 40px;
+        border: 1px solid #00cca3;
+        background: #00cca3;
+        text-align: center;
+        color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 20px;
     }
-
-
     .wrap{
-
         margin-top:30px;
-      width: 50%;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+        width: 50%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
     #results{
-
-       margin-left: 10%;
+        margin-left: 10%;
     }
-
     .recipe{
         width: 90%;
         background-color: #ffffff;
@@ -112,7 +97,6 @@
         float:left;
         margin:20px;
         margin-left:10px;
-
     }
     .recipe .title{
         margin-top:20px;
@@ -122,37 +106,33 @@
     .recipe .description{
         margin-right: 20px;
     }
-
     .recipe a:link {
-        color:#00cca3;
+        color:#00997a;
         text-decoration: none;
     }
-
     .recipe a:visited {
-      text-decoration: none;
+        text-decoration: none;
     }
-
     .recipe a:hover {
-      text-decoration: underline;
+        text-decoration: underline;
     }
-
     .recipe a:active {
-      text-decoration: underline;
+        text-decoration: underline;
     }
-
     .Rating {
-      float:right;
-      margin-top:-120px;
+        float:right;
+        margin-top:-120px;
     }
     .checked {
-      color: #00cca3;
+        color: #00cca3;
     }
-
+    h5 {
+       color: #00997a;
+    }
     .Sort{
         margin-right:15%;
         float:right;
     }
-
     .Sort select{
         outline: none;
         height: 36px;
@@ -160,43 +140,99 @@
         padding:5px;
         border-radius: 5px;
     }
-
     .Total{
         margin-left:15%;
         float:left;
     }
-
     .filterButton:hover {
         background-color: #00997a;
     }
 
     .filterButton{
-      outline: none;
-      margin-left:15px;
-      width: 160px;
-      height: 36px;
-      border: 1px solid #00cca3;
-      background: #00cca3;
-      text-align: center;
-      color: #fff;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 15px;
+        outline: none;
+        margin-left:15px;
+        width: 160px;
+        height: 36px;
+        border: 1px solid #00cca3;
+        background: #00cca3;
+        text-align: center;
+        color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 15px;
     }
 
-
-    .Options{
-
-    }
+    .left{float:left; width:33%;}
+    .Options{    }
     .content {
-      padding: 0 18px;
-      display: none;
-      overflow: hidden;
-      margin-top:5%;
+        padding: 0 18px;
+        display: none;
+        overflow: hidden;
+        margin-top:5%;
+        margin-left: 10%;
+        width:90%
     }
 
     .pagination{
         margin-right:10%;
+    }
+
+    .container {
+        display: block;
+        position: relative;
+        padding-left: 35px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        font-size: 15px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .container input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+    .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 20px;
+        width: 20px;
+        background-color: #ccc;
+    }
+    .container:hover input ~ .checkmark {
+        background-color: #00cca3;
+    }
+    .container input:checked ~ .checkmark {
+        background-color: #00cca3;
+    }
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+    .container input:checked ~ .checkmark:after {
+        display: block;
+    }
+    .container .checkmark:after {
+        left: 9px;
+        top: 5px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+    .diet{
+        float:right;
+        margin-right:-10px;
     }
 </style>
 
@@ -204,106 +240,123 @@
 <br><br>
 <div id="homep">
 
-     <br>
-    <div class="wrap">
-        <div class="search">
-             <input type="text" class="searchTerm" placeholder="Search your recipes...">
-             <button type="submit" class="searchButton">
-                <i class="fa fa-search"></i>
-             </button>
-        </div>
-    </div>
-
-
-
     <br>
-    {% if rows %}
-    </br>   </br>
-    <div class="Options" align="middle">
-        <div class="Total"> Search Results ({{total}} results found)</div>
-        <div class="Sort list">
-            <select id="sort">
-                {% for i in sort %}
-                <option value="{{ i }}">{{ i }}</option>
-                {% endfor %}
-            </select>
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="wrap">
+            <div class="search">
+                 <input type="text" value="{{query}}" class="searchTerm" name="query" placeholder="Search your recipes...">
+                 <button type="submit" class="searchButton">
+                    <i class="fa fa-search"></i>
+                 </button>
+            </div>
+        </div>
+    </form>
 
-            <button class="collapsible filterButton">Advanced Filters</button>
 
+
+        <br>
+        {% if rows %}
+        </br></br>
+        <div class="Options" align="middle">
+            <div class="Total"> Search Results ({{total}} results found)</div>
+            <div class="Sort list">
+                <select id="sort">
+                    {% for i in sort %}
+                        <option name="sort" value="{{ i }}">{{ i }}</option>
+                    {% endfor %}
+                </select>
+                <button class="collapsible filterButton">Advanced Filters</button>
+            </div>
+        </div>
+        <div class="content" align="middle">
+            <div id="cuisines" class="left">
+                <h5>Cuisine</h5>
+                {% for c in cuisine %}
+                    <label class="container">{{c.cuisine}}
+                      <input type="checkbox" name="cuisine" value="{{c.cuisine}}">
+                      <span class="checkmark"></span>
+                    </label>
+                {% endfor%}
+            </div>
+
+            <div id="meals" class="left">
+                <h5>Course Types</h5>
+                {% for m in meals %}
+                    <label class="container">{{m.type}}
+                      <input type="checkbox" name="meal" value="{{m.type}}">
+                      <span class="checkmark"></span>
+                    </label>
+                {% endfor%}
+            </div>
+
+            <div id="difficulties" class="left">
+                <h5>Difficulty</h5>
+                <label class="container">Beginners
+                  <input type="checkbox" name="difficulty">
+                  <span class="checkmark"></span>
+                </label>
+                <label class="container">Intermediate
+                  <input type="checkbox" name="difficulty">
+                  <span class="checkmark"></span>
+                </label><label class="container">Advanced
+                  <input type="checkbox" name="difficulty">
+                  <span class="checkmark"></span>
+                </label>
+            </div>
         </div>
 
-    </div>
-    <div class="content" align="middle">
-        <div id="cuisines">
-            <h3>Cuisine</h3>
-        {% for c in cuisine %}
-          <input type="checkbox" id="cuisine" name="cuisine" value="{{c.cuisine}}">
-          <label for="cuisine">{{c.cuisine}}</label>
-        {% endfor%}
-        </div>
 
-        <div id="meals">
-        {% for m in meals %}
-          <input type="checkbox" id="meal" name="meal" value="{{m.type}}">
-          <label for="meal">{{m.type}}</label>
-        {% endfor%}
-        </div>
+    <br><hr>
+    <div  id="results">
+          {% for r in rows %}
+            <a href="{{r.link}}" target="_blank" title="{{r.title}}">
+                <div class="recipe w3-panel w3-card">
+              <div class="ImageContainer"> <img src='{{r.image.url}}' width="150px" height="150px"/></div>
+              <div class="InformationContainer">
+                  <div class="title">{{r.title}}</div>
+                  <a href="{{r.link}}" target="_blank" title="See recipe">{{r.link}}</a>
+                  <div class="description">{{r.meta_description}}</div>
+                  <div>
+                      {% for i in r.ingredients_list %}
+                      {{i.name}} -
+                      {% endfor %}
+                  </div>
 
-        <div id="difficulties">
-          <input type="checkbox" id="difficulty1" name="difficulty" value="Beginner">
-          <label for="difficulty1">Beginner</label>
-            <input type="checkbox" id="difficulty2" name="difficulty" value="Intermediate">
-          <label for="difficulty2">Intermediate</label>
-            <input type="checkbox" id="difficulty3" name="difficulty" value="Advanced">
-          <label for="difficulty3">Advanced</label>
-        </div>
-    </div>
+                  <div class="Rating">
+                        <span class="fa fa-star  {% if r.rating >= 1 %} checked{% endif %} "></span>
+                        <span class="fa fa-star {% if r.rating >= 2 %} checked{% endif %}"></span>
+                        <span class="fa fa-star {% if r.rating >= 3 %} checked{% endif %}"></span>
+                        <span class="fa fa-star {% if r.rating >= 4 %} checked{% endif %}"></span>
+                        <span class="fa fa-star {% if r.rating >= 5 %} checked{% endif %}"></span>
+                  </div>
 
-    <br>
-    <hr>
-     <div id="results">
-      {% for r in rows %}
-      <div class="recipe w3-panel w3-card">
-          <div class="ImageContainer"> <img src='{{r.image.url}}' width="150px" height="150px"/></div>
-          <div class="InformationContainer">
-              <div class="title">{{r.title}}</div>
-              <a href="{{r.link}}" target="_blank" title="See recipe">{{r.link}}</a>
-              <div class="description">{{r.meta_description}}</div>
-              <div>
-                  {% for i in r.ingredients_list %}
-                  {{i.name}} -
-                  {% endfor %}
+                  <div class="diet"> {% if r.diet.diet == "Vegan" %}<img src="{% static 'vegan.png' %}" width="45px" height="45px" align="middle"/> {% endif %}</div>
+
+                  <div class="diet"> {% if r.diet.diet == "Vegetarian" %}<img src="{% static 'vegetarian.png' %}" width="50px" height="50px" align="middle"/> {% endif %}</div>
               </div>
 
-              <div class="Rating">
-                    <span class="fa fa-star  {% if r.rating >= 1 %} checked{% endif %} "></span>
-                    <span class="fa fa-star {% if r.rating >= 2 %} checked{% endif %}"></span>
-                    <span class="fa fa-star {% if r.rating >= 3 %} checked{% endif %}"></span>
-                    <span class="fa fa-star {% if r.rating >= 4 %} checked{% endif %}"></span>
-                    <span class="fa fa-star {% if r.rating >= 5 %} checked{% endif %}"></span>
-              </div>
           </div>
+            </a>
+          {% endfor %}
 
-      </div>
-      {% endfor %}
+          <div class="pagination" align="middle">
+                <span class="step-links">
+                {% if rows.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ rows.previous_page_number }}">previous</a>
+                {% endif %}
 
-      <div class="pagination" align="middle">
-        <span class="step-links">
-        {% if rows.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ rows.previous_page_number }}">previous</a>
-        {% endif %}
+                <span class="current">
+                    Page {{ rows.number }} of {{ rows.paginator.num_pages }}.
+                </span>
 
-        <span class="current">
-            Page {{ rows.number }} of {{ rows.paginator.num_pages }}.
-        </span>
-
-        {% if rows.has_next %}
-            <a href="?page={{ rows.next_page_number }}">next</a>
-            <a href="?page={{ rows.paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-        </span>
-      </div>
+                {% if rows.has_next %}
+                    <a href="?page={{ rows.next_page_number }}">next</a>
+                    <a href="?page={{ rows.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+                </span>
+          </div>
     </div>
 
     {%else%}
@@ -315,7 +368,5 @@
     {%endif%}
 </div>
 <br>
-
-
 
 {% endblock %}
