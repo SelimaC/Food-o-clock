@@ -171,12 +171,12 @@ def IntersecOfSets(arr1, arr2, arr3):
     return final_list
 
 
- 
-def Commonize(comm_list, comm1, comm2):
+ #transfer_col is the column we want to add to comm1 from comm2
+def Commonize(comm_list, comm1, comm2, transfer_col):
     common_1 = comm1.loc[comm1['dish_name'].isin(comm_list)]
     common_2 = comm2.loc[comm2['dish_name'].isin(comm_list)]
     for i,dish in enumerate([j for j in common_1["dish_name"]]):
-        common_1.loc[common_1.index[i], "World Cusine"] = common_2.loc[common_2["dish_name"] == dish]["World Cuisine"].values[0]
+        common_1.loc[common_1.index[i], transfer_col] = common_2.loc[common_2["dish_name"] == dish][transfer_col].values[0]
         
     return common_1
 
@@ -193,9 +193,11 @@ meal = ReciepExtract("Meal Type",10)
 diet = ReciepExtract("Diet & Health",10)
 cuisine = ReciepExtract("World Cuisine",10)
 
+
+#Finding the common recipes between main  categories
 common_recip_mecu = IntersecOfSets([i for i in meal["dish_name"]], [i for i in meal["dish_name"]], [i for i in cuisine["dish_name"]])
 
-comm_dish = Commonize(common_recip_mecu, meal, cuisine)
+comm_dish = Commonize(common_recip_mecu, meal, cuisine, "World Cusine")
 
 with pd.ExcelWriter('Recipes.xlsx') as writer:
     meal.to_excel(writer, sheet_name='Meal')
