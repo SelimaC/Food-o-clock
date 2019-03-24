@@ -74,27 +74,46 @@ c = conn.cursor()
 
 print("Recipes table \n")
 for row in c.execute('SELECT * FROM recipes'):
-        text = eval(row[8])
+        text = eval(row[9])
         ingredients = standardize(text)
 
         recipe = {}
         recipe['ingredients'] = ingredients
-        recipe['ingredients_list'] = row[8]
-        recipe['title'] = row[6]
-        recipe['cook_time'] = 0 if row[0] is None else int(row[0].split(' ')[0])
+        recipe['ingredients_list'] = row[9]
+        recipe['title'] = row[7]
+        if row[0] != 'none':
+            recipe['cook_time'] = 0 if row[0] is None else int(row[0].split(' ')[0])
+        else:
+            recipe['cook_time'] = 0
 
-        recipe['preparation_time'] = 0 if row[11] is None else int(row[11].split(' ')[0])
-        recipe['corpus'] = row[5]
-        recipe['link'] = row[9]
+        if row[12] != 'none':
+            recipe['preparation_time'] = 0 if row[12] is None else int(row[12].split(' ')[0])
+        else:
+            recipe['preparation_time'] = 0
+        recipe['corpus'] = row[6]
+        recipe['link'] = row[10]
         recipe['meta_description'] = row[2]
         recipe['image_url'] = row[11]
-        recipe['rating'] = 0 if row[12] is None else int(row[12])
+        recipe['rating'] = 0 if row[13] is None else int(row[13])
+
+        if row[8] is not None:
+            if row[8]=='dinner':
+                recipe['meal_type'] = 'Dinner Recipes'
 
         if row[1] is not None:
-            recipe['cuisine'] = row[1]
+            recipe['cuisine'] = row[1].capitalize() + ' Recipes'
 
-        if row[3] is not None:
-            recipe['diet'] = row[3]
+        if row[4] != 'no info':
+            diet = eval(row[4])
+            if row[4] is not None:
+                if 'Vegan' in row[4]:
+                    recipe['diet'] = 'Vegan Recipes'
+                if 'Vegetarian' in row[4]:
+                    recipe['diet'] = 'Vegetarian Recipes'
+                if 'Gluten-free' in row[4]:
+                    recipe['diet'] = 'Gluten Free Recipes'
+                if 'Healthy' in row[4]:
+                    recipe['diet'] = 'Healthy Recipes'
 
         migration.append(recipe)
 
@@ -105,12 +124,15 @@ print(len(migration))
 diets = ['Diabetic Recipes', 'Gluten Free Recipes', 'Healthy Recipes', 'Low Calorie Recipes', 'Low Fat Recipes', 'Vegan Recipes', 'Vegetarian Recipes']
 meals = ['Appetizers & Snacks Recipes', 'Breakfast & Brunch Recipes', 'Dessert Recipes', 'Dinner Recipes', 'Drink Recipes']
 cuisines = ['Indian Recipes', 'Asian Recipes', 'Italian Recipes', 'Mexican Recipes', 'Southern Recipes']
+cuisines2 = ['Japanese Recipes', 'Caribbean Recipes', 'American Recipes', 'British Recipes', 'Chinese Recipes',
+            'French Recipes', 'Greek Recipes', 'Mediterranean Recipes', 'Moroccan Recipes', 'Spanish Recipes',
+            'Thai Recipes', 'Turkish Recipes', 'Vietnamese Recipes']
 
 
 # Copy data to website database
 conn = sqlite3.connect('db.sqlite3')
 c = conn.cursor()
-for cuisine in cuisines:
+for cuisine in cuisines2:
     print(cuisine)
     try:
         sql = '''INSERT INTO foodoclock_cuisine (cuisine) VALUES(?)'''
@@ -149,7 +171,11 @@ for ingredient in ingredients_to_save:
 
 
 
-cuisine_ids = {'Indian Recipes': 155,'Asian Recipes':156,'Italian Recipes':157,'Mexican Recipes':158,'Southern Recipes':159}
+cuisine_ids = {'Indian Recipes': 155,'Asian Recipes':156,'Italian Recipes':157,'Mexican Recipes':158,'Southern Recipes':159,
+               'Japanese Recipes':160, 'Caribbean Recipes':161, 'American Recipes':162, 'British Recipes':163, 'Chinese Recipes':164,
+              'French Recipes':165, 'Greek Recipes':166, 'Mediterranean Recipes':167, 'Moroccan Recipes':168, 'Spanish Recipes':169,
+              'Thai Recipes':170, 'Turkish Recipes':171, 'Vietnamese Recipes':172
+}
 diets_ids =  {'Diabetic Recipes':234, 'Gluten Free Recipes':235, 'Healthy Recipes':236, 'Low Calorie Recipes':237, 'Low Fat Recipes':238, 'Vegan Recipes':239, 'Vegetarian Recipes':240}
 meals_ids =  {'Appetizers & Snacks Recipes':198, 'Breakfast & Brunch Recipes':199, 'Desserts Recipes':200, 'Dinner Recipes':201, 'Drinks Recipes':202}
 
