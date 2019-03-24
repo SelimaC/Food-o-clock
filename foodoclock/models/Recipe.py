@@ -8,9 +8,9 @@ from foodoclock.models.Cuisine import Cuisine
 class Recipe(models.Model):
     auto_increment_id = models.AutoField(primary_key=True)
 
-    meal_type = models.ForeignKey(MealType, on_delete=models.CASCADE, blank=True)
-    cuisine = models.ForeignKey(Cuisine, on_delete=models.CASCADE, blank=True)
-    diet = models.ForeignKey(Diet, on_delete=models.CASCADE, blank=True)
+    meal_type = models.ForeignKey(MealType, on_delete=models.CASCADE, blank=True, null=True)
+    cuisine = models.ForeignKey(Cuisine, on_delete=models.CASCADE, blank=True, null=True)
+    diet = models.ForeignKey(Diet, on_delete=models.CASCADE, blank=True, null=True)
 
     title = models.CharField(max_length=500)
     rating = models.FloatField(default=0)
@@ -21,6 +21,7 @@ class Recipe(models.Model):
     preparation_time = models.IntegerField(blank=True)
     cook_time = models.IntegerField(blank=True, default=0)
     ingredients = models.ManyToManyField(Ingredient, blank=True)
+    ingredients_list = models.CharField(max_length=10000, blank=True)
     click=models.IntegerField(default=0)
 
     @classmethod

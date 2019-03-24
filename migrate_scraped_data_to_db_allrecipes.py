@@ -1,5 +1,6 @@
 from inflection import singularize
 import unidecode
+import keyboard
 import re
 from textblob import TextBlob
 from nltk.corpus import stopwords
@@ -78,6 +79,7 @@ for row in c.execute('SELECT * FROM Meal'):
 
         recipe = {}
         recipe['ingredients'] = ingredients
+        recipe['ingredients_list'] = row[5]
         recipe['title'] = row[0]
         recipe['cook_time'] = 0 if row[1] is None else int(row[1].split(' ')[0])
         recipe['meal_type'] = row[2]
@@ -97,6 +99,7 @@ for row in c.execute('SELECT * FROM Diet'):
 
         recipe = {}
         recipe['ingredients'] = ingredients
+        recipe['ingredients_list'] = row[5]
         recipe['title'] = row[0]
         recipe['cook_time'] = 0 if row[1] is None else int(row[1].split(' ')[0])
         recipe['diet'] = row[2]
@@ -107,14 +110,22 @@ for row in c.execute('SELECT * FROM Diet'):
         recipe['image_url'] = row[8]
         recipe['rating'] = 0 if row[9] is None else int(row[9])
 
-        migration.append(recipe)
+        flag= True
+        for m in migration:
+            if m['title']==recipe['title'] or m['link']==recipe['link']:
+                flag=False
+                break
+        if flag:
+            migration.append(recipe)
 
 print("Cuisine table \n")
 for row in c.execute('SELECT * FROM Cusine'):
         text = eval(row[5])
         ingredients = standardize(text)
 
+
         recipe = {}
+        recipe['ingredients_list'] = row[5]
         recipe['ingredients'] = ingredients
         recipe['title'] = row[0]
         recipe['cook_time'] = 0 if row[1] is None else int(row[1].split(' ')[0])
@@ -126,7 +137,13 @@ for row in c.execute('SELECT * FROM Cusine'):
         recipe['image_url'] = row[8]
         recipe['rating'] = 0 if row[9] is None else int(row[9])
 
-        migration.append(recipe)
+        flag = True
+        for m in migration:
+            if m['title'] == recipe['title'] or m['link'] == recipe['link']:
+                flag = False
+                break
+        if flag:
+            migration.append(recipe)
 
 
 print("Common dishes table \n")
@@ -136,6 +153,7 @@ for row in c.execute('SELECT * FROM Common_dish'):
 
         recipe = {}
         recipe['ingredients'] = ingredients
+        recipe['ingredients_list'] = row[5]
         recipe['title'] = row[0]
         recipe['cook_time'] = 0 if row[1] is None else int(row[1].split(' ')[0])
         recipe['meal_type'] = row[2]
@@ -147,15 +165,21 @@ for row in c.execute('SELECT * FROM Common_dish'):
         recipe['rating'] = 0 if row[9] is None else int(row[9])
         recipe['cuisine'] = row[10]
 
-        migration.append(recipe)
+        flag = True
+        for m in migration:
+            if m['title'] == recipe['title'] or m['link'] == recipe['link']:
+                flag = False
+                break
+        if flag:
+            migration.append(recipe)
 
 conn.close()
 print(len(migration))
 
 
-diets = [] # ['Diabetic Recipes', 'Gluten Free Recipes', 'Healthy Recipes', 'Low Calorie Recipes', 'Low Fat Recipes', 'Vegan Recipes', 'Vegetarian Recipes']
-meals = [] # ['Appetizers & Snacks Recipes', 'Breakfast & Brunch Recipes', 'Dessert Recipes', 'Dinner Recipes', 'Drink Recipes']
-cuisines = [] # ['Indian Recipes', 'Asian Recipes', 'Italian Recipes', 'Mexican Recipes', 'Southern Recipes']
+diets = ['Diabetic Recipes', 'Gluten Free Recipes', 'Healthy Recipes', 'Low Calorie Recipes', 'Low Fat Recipes', 'Vegan Recipes', 'Vegetarian Recipes']
+meals = ['Appetizers & Snacks Recipes', 'Breakfast & Brunch Recipes', 'Dessert Recipes', 'Dinner Recipes', 'Drink Recipes']
+cuisines = ['Indian Recipes', 'Asian Recipes', 'Italian Recipes', 'Mexican Recipes', 'Southern Recipes']
 
 
 # Copy data to website database
@@ -197,6 +221,63 @@ for ingredient in ingredients_to_save:
     except sqlite3.IntegrityError as e:
         print('sqlite error: ', e.args[0])  # column name is not unique
     conn.commit()
+
+
+
+cuisine_ids = {'Indian Recipes': 155,'Asian Recipes':156,'Italian Recipes':157,'Mexican Recipes':158,'Southern Recipes':159}
+diets_ids =  {'Diabetic Recipes':234, 'Gluten Free Recipes':235, 'Healthy Recipes':236, 'Low Calorie Recipes':237, 'Low Fat Recipes':238, 'Vegan Recipes':239, 'Vegetarian Recipes':240}
+meals_ids =  {'Appetizers & Snacks Recipes':198, 'Breakfast & Brunch Recipes':199, 'Desserts Recipes':200, 'Dinner Recipes':201, 'Drinks Recipes':202}
+
+if True:
+    for r in migration:
+        if 'diet' in r:
+            diet=diets_ids[r['diet']]
+        else:
+            diet=None
+        if 'cuisine' in r:
+            cuisine=cuisine_ids[r['cuisine']]
+        else:
+            cuisine=None
+        if 'meal_type' in r:
+            meal=meals_ids[r['meal_type']]
+        else:
+            meal=None
+
+        recipe=(r['title'], r['link'], r['corpus'], r['meta_description'], r['preparation_time'],
+                cuisine, diet, meal, 0, r['image_url'], r['cook_time'], r['rating'])
+        try:
+            sql = '''INSERT INTO foodoclock_recipe (title,link,corpus,meta_description,preparation_time,cuisine_id,diet_id,meal_type_id,click,image_url,cook_time,rating, ingredients_list) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+            c.execute(sql, (r['title'], r['link'], r['corpus'], r['meta_description'], r['preparation_time'],
+                cuisine, diet, meal, 0, r['image_url'], r['cook_time'], r['rating'], r['ingredients_list']))
+        except sqlite3.IntegrityError as e:
+            print('sqlite error: ', e.args[0])  # column name is not unique
+        conn.commit()
+
+
+# Ingredient binding
+if True:
+    for r in migration:
+        print(r['title'])
+        for i in r['ingredients']:
+            print(i)
+            recipe_ids = c.execute('SELECT auto_increment_id FROM foodoclock_recipe WHERE title = ? AND ingredients_list=?' , (r['title'],r['ingredients_list'],))
+            for id in recipe_ids:
+                r_id=id
+            ing_id = c.execute('SELECT id FROM foodoclock_ingredient WHERE name =?' , (i,))
+            for id in ing_id:
+                i_id=id
+            print(r_id)
+            print(i_id)
+            try:
+                sql = '''INSERT INTO foodoclock_recipe_ingredients (recipe_id, ingredient_id) VALUES(?,?)'''
+                c.execute(sql, ( r_id[0],i_id[0],))
+            except sqlite3.IntegrityError as e:
+                print('sqlite error: ', e.args[0])  # column name is not unique
+            conn.commit()
+        #keyboard.wait("enter")
+
+
+
 
 conn.close()
 
