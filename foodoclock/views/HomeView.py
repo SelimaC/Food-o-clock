@@ -5,6 +5,7 @@ from foodoclock.models.Recipe import Recipe
 from foodoclock.models.MealType import MealType
 from foodoclock.models.Cuisine import Cuisine
 from foodoclock.models.UserDetails import UserDetails
+from foodoclock.models.Ingredient import Ingredient
 from inflection import singularize
 import unidecode
 import re
@@ -59,6 +60,20 @@ def home(request):
     if request.POST: # search has been performed
         query = request.POST['query']
 
+        if query:
+            parsed_query = query_parser(query)
+
+            results = retrieve_results(parsed_query)
+
+            total = len(results)
+            for r in results:
+                r.ingredients_display = eval(r.ingredients_list)
+                r.rating_display = int(r.rating)
+
+            paginator = Paginator(results, 10)  # Show 10 contacts per page
+            page = request.GET.get('page')
+            rows = paginator.get_page(page)
+
         return render(request, '../templates/home.html',
                       {'page': 1, 'rows': rows, 'total': total, 'sort': sort_options, 'cuisine': cuisines,
                        'meals': meals, 'query': query})
@@ -68,7 +83,8 @@ def home(request):
                         'sort': sort_options, 'cuisine': cuisines,'meals': meals})
 
 
-def query_parser(query):
+def query_parser(query_string):
+    query = {}
     query['ingredients'] = []
     query['title'] = ""
     query['diet'] = []
@@ -76,7 +92,7 @@ def query_parser(query):
     query['meal_type'] = ""
     query['sort'] = ""
 
-    parts = query.split(' ')
+    parts = query_string.split(' ')
     title = []
     ingredients = []
     for p in parts:
@@ -138,3 +154,15 @@ def standardize(ingredients):
             recipe.append((flag,temp))
 
     return recipe
+
+def retrieve_results(filters):
+    ingredients = []
+    not_ingredients = []
+    for i in filters['ingredients']:
+        if i[0]:
+            ingredients.append(i[1])
+        else:
+            not_ingredients.append(i[1])
+    ingredients_ids = Ingredient.getIngredientsByNames(ingredients)
+    not_ingredients_ids = Ingredient.getIngredientsByNames(not_ingredients)
+    return Recipe.getRecipesMatchingIngredients(not_ingredients_ids,ingredients_ids)
