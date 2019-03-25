@@ -8,19 +8,20 @@ from foodoclock.models.Cuisine import Cuisine
 class Recipe(models.Model):
     auto_increment_id = models.AutoField(primary_key=True)
 
-    meal_type = models.ForeignKey(MealType, on_delete=models.CASCADE)
-    cuisine = models.ForeignKey(Cuisine, on_delete=models.CASCADE)
-    diet = models.ForeignKey(Diet, on_delete=models.CASCADE)
+    meal_type = models.ForeignKey(MealType, on_delete=models.CASCADE, blank=True, null=True)
+    cuisine = models.ForeignKey(Cuisine, on_delete=models.CASCADE, blank=True, null=True)
+    diet = models.ForeignKey(Diet, on_delete=models.CASCADE, blank=True, null=True)
 
-    title = models.CharField(max_length=200)
-    rating = models.FloatField()
-    link = models.CharField(max_length=200)
+    title = models.CharField(max_length=500)
+    rating = models.FloatField(default=0)
+    link = models.CharField(max_length=500)
     image_url = models.CharField(max_length=500,blank=True)
-    corpus = models.CharField(max_length=10000)
-    meta_description = models.CharField(max_length=500)
-    preparation_time = models.IntegerField()
-    image = models.ImageField()
+    corpus = models.CharField(max_length=10000, blank=True)
+    meta_description = models.CharField(max_length=1000, blank=True)
+    preparation_time = models.IntegerField(blank=True)
+    cook_time = models.IntegerField(blank=True, default=0)
     ingredients = models.ManyToManyField(Ingredient, blank=True)
+    ingredients_list = models.CharField(max_length=10000, blank=True)
     click=models.IntegerField(default=0)
 
     @classmethod

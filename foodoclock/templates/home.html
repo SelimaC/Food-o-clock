@@ -260,14 +260,16 @@
         </br></br>
         <div class="Options" align="middle">
             <div class="Total"> Search Results ({{total}} results found)</div>
-            <div class="Sort list">
-                <select id="sort">
-                    {% for i in sort %}
-                        <option name="sort" value="{{ i }}">{{ i }}</option>
-                    {% endfor %}
-                </select>
-                <button class="collapsible filterButton">Advanced Filters</button>
-            </div>
+
+                <div class="Sort list">
+                    <select id="sort">
+                        {% for i in sort %}
+                            <option name="sort" value="{{ i }}">{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                    <button class="collapsible filterButton">Advanced Filters</button>
+                </div>
+
         </div>
         <div class="content" align="middle">
             <div id="cuisines" class="left">
@@ -312,7 +314,7 @@
           {% for r in rows %}
             <a href="{{r.link}}" target="_blank" title="{{r.title}}">
                 <div class="recipe w3-panel w3-card">
-              <div class="ImageContainer"> <img src='{{r.image.url}}' width="150px" height="150px"/></div>
+              <div class="ImageContainer"> <img src='{{r.image_url}}' width="150px" height="150px"/></div>
               <div class="InformationContainer">
                   <div class="title">{{r.title}}</div>
                   <a href="{{r.link}}" target="_blank" title="See recipe">{{r.link}}</a>
