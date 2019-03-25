@@ -25,7 +25,7 @@ foodfile = open("basicfood.txt", "r")
 allow = foodfile.read().split('\n')
 foodfile.close()
 
-file = open("stopfoods10", "r")
+file = open("stopfoods10.txt", "r")
 stopfoods = file.read().split('\n')
 file.close()
 
@@ -57,22 +57,22 @@ for file in filenames:
             ing = unidecode.unidecode(ing)
 
             ing = ing.split(" or ")[0]
-            ing = re.sub(r" ?\([^)]+\)", "", ing)
-            ing = re.sub(r"([0-9]*-ounces)+", "", ing)
-            ing = re.sub(r"([0-9]*-ounce)+", "", ing)
-            ing = re.sub(r"([0-9]*-inches)+", "", ing)
-            ing = re.sub(r"([0-9]*-inch)+", "", ing)
-            ing = re.sub(r"([0-9]*)+", "", ing)
-            ing = re.sub(r"(-)+", "", ing)
-            ing = re.sub(r"(/)+", "", ing)
+            ing = re.sub(r" ?\([^)]+\)", " ", ing)
+            ing = re.sub(r"([0-9]*-ounces)+", " ", ing)
+            ing = re.sub(r"([0-9]*-ounce)+", " ", ing)
+            ing = re.sub(r"([0-9]*-inches)+", " ", ing)
+            ing = re.sub(r"([0-9]*-inch)+", " ", ing)
+            ing = re.sub(r"([0-9]*)+", " ", ing)
+            ing = re.sub(r"(-)+", " ", ing)
+            ing = re.sub(r"(/)+", " ", ing)
             commasplit = re.split(r"\,", ing)
             ing = commasplit[0]
-            ing = ing.replace("*", "")
-            ing = ing.replace("+", "")
-            ing = ing.replace("-", "")
-            ing = ing.replace(".", "")
-            ing = ing.replace(":", "")
-            ing = ing.replace("(", "")
+            ing = ing.replace("*", " ")
+            ing = ing.replace("+", " ")
+            ing = ing.replace("-", " ")
+            ing = ing.replace(".", " ")
+            ing = ing.replace(":", " ")
+            ing = ing.replace("(", " ")
             ing = ing.split("http")[0]
 
             wi = TextBlob(ing)
@@ -85,19 +85,14 @@ for file in filenames:
                         temp = temp + " " + singularize(pos[0])
             temp = re.sub(r"^\s+", "", temp)
             temp = re.sub(r"\s+$", "", temp)
-            #print(temp)
+            print(temp)
             if temp == "":
                 recipe.append(temp)
             #print("----------------------------")
         output.append({"cuisine": data["attributes"]["cuisine"][0], "ingredients": list(set(recipe))})
-        traindata.append(list(set(recipe)))
-
-
-
-    #keyboard.wait("enter")
+        #traindata.append(list(set(recipe)))
 
     read_file.close()
-'''
+
 with open('output.json', 'w') as json_file:
     json.dump(output, json_file)
-'''
