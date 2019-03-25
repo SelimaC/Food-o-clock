@@ -248,4 +248,250 @@ pea
 pumpkin
 squash
 tomato
-zucchini
+artichokes
+aubergines
+eggplants
+asparaguses
+legume
+alfalfa sprout
+azuki bean
+adzuki
+bean sprout
+black bean
+black-eyed pea
+borlotti beans
+broad bean
+chickpea
+garbanzo
+ceci bean
+green bean
+kidney bean
+lentil
+lima bean
+butter beans
+mung beans
+navy beans
+pinto beans
+runner beans
+split peas
+soy beans
+peas
+mangetouts
+snap peas
+broccoflowers
+broccolis
+brussels sprouts
+cabbages
+kohlrabi
+cauliflowers
+celeries
+endives
+fiddlehead
+frisees
+fennels
+green
+beet greens
+bok choys
+chards
+collard greens
+kale
+mustard greens
+spinach
+herbs and spices
+anise
+basil
+
+parsley
+rosemary
+sage
+thyme
+lettuce
+arugula
+mushrooms
+nettles
+spinach
+okra
+onions
+chives
+garlic
+leek
+onions
+shallots
+scallions
+parsleys
+peppers
+bell peppers
+chili peppers
+jalapenos
+habaneros
+paprika
+tabasco pepper
+cayenne pepper
+radicchio
+rhubarbs
+root vegetables
+beetroots
+carrots
+celeriacs
+corms
+eddoe
+konjac
+taro
+water chestnuts
+gingers
+parsnips
+rutabaga
+radishes
+wasabi
+horseradishes
+white radishes
+daikons
+tubers
+jicama
+potatoes
+quandong
+sunchokes
+sweet potatoes
+yams
+turnip
+salsify
+skirret
+sweetcorn
+topinambur
+squashes
+acorn squash
+bitter melons
+butternut squash
+banana squash
+courgettes
+zucchinis
+cucumbers
+delicatas
+gem squashes
+hubbard squashes
+marrows
+squashes
+patty pan
+pumpkins
+spaghetti squashes
+tat sois
+tomatoes
+watercressess
+açaís
+apples
+akees
+apricots
+avocados
+bananas
+bilberries
+blackberries
+blackcurrants
+black sapotes
+blueberries
+boysenberries
+crab apple
+currants
+cherries
+cherimoyas
+chico fruits
+cloudberries
+coconuts
+cranberries
+cucumbers
+damsons
+dates
+dragonfruits
+durians
+elderberries
+feijoas
+figs
+goji berryies
+gooseberrys
+grapes
+raisins
+grapefruits
+guavas
+honeyberries
+huckleberries
+jabuticabas
+jackfruits
+jambuls
+japanese plums
+jostaberries
+jujubes
+juniper berries
+kiwanos
+kiwi
+kiwis
+kiwifruits
+Kumquat
+lemons
+limes
+loquats
+longans
+lychees
+mangoes
+mangosteens
+marionberries
+melons
+cantaloupes
+honeydews
+watermelons
+miracle fruits
+mulberries
+nectarines
+nances
+olives
+oranges
+blood oranges
+clementines
+mandarines
+tangerines
+papayas
+passionfruits
+peachs
+pears
+persimmons
+plantains
+plums
+prunes
+pineapples
+pineberries
+plumcots
+pomegranates
+pomelos
+purple mangosteens
+quinces
+raspberries
+salmonberries
+rambutan
+redcurrants
+salal berry
+salak
+satsuma
+soursop
+star apples
+star fruits
+strawberries
+surinam cherry
+tamarillo
+tamarindS
+ugli fruit
+white currant
+white sapote
+avocados
+bell peppers
+chili
+chilis
+almonds
+flaxseed
+flaxseeds
+chili peppers
+cucumbers
+eggplants
+olives
+peas
+pumpkins
+squashes
+tomatoes
+zucchinis

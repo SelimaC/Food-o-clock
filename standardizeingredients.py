@@ -23,9 +23,15 @@ stop = ['cups', 'striped','firm','whole','thumbsized','mediumsize','litre','lite
 
 foodfile = open("basicfood.txt", "r")
 allow = foodfile.read().split('\n')
+foodfile.close()
+
+file = open("stopfoods10", "r")
+stopfoods = file.read().split('\n')
+file.close()
 
 tags = ['JJ', 'JJS', 'JJR', 'NN', 'NNS', 'NNP', 'NNPS']
-
+for ss in stopfoods:
+    stopWords.add(ss)
 
 for s in stop:
     stopWords.add(s)
@@ -49,7 +55,7 @@ for file in filenames:
             #ing = '1 1/4 cups all-purpose flour (about 5 1/2 ounces)'
             ing = ing.lower()
             ing = unidecode.unidecode(ing)
-            #print("<<<<<")
+
             ing = ing.split(" or ")[0]
             ing = re.sub(r" ?\([^)]+\)", "", ing)
             ing = re.sub(r"([0-9]*-ounces)+", "", ing)
@@ -61,7 +67,12 @@ for file in filenames:
             ing = re.sub(r"(/)+", "", ing)
             commasplit = re.split(r"\,", ing)
             ing = commasplit[0]
-            ing = ing.split(" or ")[0]
+            ing = ing.replace("*", "")
+            ing = ing.replace("+", "")
+            ing = ing.replace("-", "")
+            ing = ing.replace(".", "")
+            ing = ing.replace(":", "")
+            ing = ing.replace("(", "")
             ing = ing.split("http")[0]
 
             wi = TextBlob(ing)
@@ -70,12 +81,11 @@ for file in filenames:
 
             for pos in  tagbag:
                 if (pos[1] in tags) or (singularize(pos[0]) in allow):
-                    if pos[0] not in stopWords:
+                    if singularize(pos[0]) not in stopWords:
                         temp = temp + " " + singularize(pos[0])
             temp = re.sub(r"^\s+", "", temp)
             temp = re.sub(r"\s+$", "", temp)
-            #count = count + len(wi.noun_phrases)
-            print(temp)
+            #print(temp)
             if temp == "":
                 recipe.append(temp)
             #print("----------------------------")
