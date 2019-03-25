@@ -91,7 +91,7 @@
     }
     .recipe{
         width: 90%;
-        height: 7%;
+        height: 8%;
         background-color: #ffffff;
     }
     .recipe .ImageContainer{
@@ -250,6 +250,12 @@
         -moz-columns: 3;
         font-size: 13px;
     }
+    .time{
+        font-size: 11px;
+        font-style: italic;
+        margin-top: 2px;
+        margin-bottom: 2px;
+    }
 </style>
 
 
@@ -331,7 +337,7 @@
             <a href="{{r.link}}" class="clickableContainer"  target="_blank" title="{{r.title}}">
               <div class="recipe w3-panel w3-card">
               <div class="ImageContainer"> <img src='{{r.image_url}}' width="150px" height="150px"/></div>
-                  
+
               <div class="Rating">
                   <span class="fa fa-star  {% if r.rating_display >= 1 %} checked{% endif %} "></span>
                   <span class="fa fa-star {% if r.rating_display >= 2 %} checked{% endif %}"></span>
@@ -342,6 +348,7 @@
               <div class="InformationContainer">
                   <div class="title">{{r.title}}</div>
                   <a id ="linkPage" href="{{r.link}}" target="_blank" title="See recipe">{{r.link}}</a>
+                  <div class="time">Preparation time: {{r.preparation_time}} minutes  - Cook time: {{r.cook_time}} minutes</div>
                   <div class="description">{{r.meta_description}}</div>
                   <div class="ingredientsDisplay">
                       <ul>

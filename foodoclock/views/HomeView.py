@@ -35,7 +35,7 @@ def home(request):
     # Get all recipes
     recipes= Recipe.objects.all()
     total=len(recipes)
-    sort_options = ['Sort by', 'Title', 'Preparation time']
+    sort_options = ['Sort by', 'Title', 'Time', 'Rating']
     for r in recipes:
         r.ingredients_display=eval(r.ingredients_list)
         r.rating_display = int(r.rating)
