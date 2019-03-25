@@ -178,7 +178,7 @@ print(len(migration))
 
 
 diets = ['Diabetic Recipes', 'Gluten Free Recipes', 'Healthy Recipes', 'Low Calorie Recipes', 'Low Fat Recipes', 'Vegan Recipes', 'Vegetarian Recipes']
-meals = ['Appetizers & Snacks Recipes', 'Breakfast & Brunch Recipes', 'Dessert Recipes', 'Dinner Recipes', 'Drink Recipes']
+meals = ['Appetizers & Snacks Recipes', 'Breakfast & Brunch Recipes', 'Desserts Recipes', 'Dinner Recipes', 'Drinks Recipes']
 cuisines = ['Indian Recipes', 'Asian Recipes', 'Italian Recipes', 'Mexican Recipes', 'Southern Recipes']
 
 
@@ -223,10 +223,28 @@ for ingredient in ingredients_to_save:
     conn.commit()
 
 
+#Recover ids
+cuisine_ids={}
+for cuisine in cuisines:
+    ids=c.execute('SELECT id FROM foodoclock_cuisine WHERE cuisine =?', (cuisine,))
+    for i in ids:
+        id = i
+    cuisine_ids[cuisine] = id[0]
 
-cuisine_ids = {'Indian Recipes': 155,'Asian Recipes':156,'Italian Recipes':157,'Mexican Recipes':158,'Southern Recipes':159}
-diets_ids =  {'Diabetic Recipes':234, 'Gluten Free Recipes':235, 'Healthy Recipes':236, 'Low Calorie Recipes':237, 'Low Fat Recipes':238, 'Vegan Recipes':239, 'Vegetarian Recipes':240}
-meals_ids =  {'Appetizers & Snacks Recipes':198, 'Breakfast & Brunch Recipes':199, 'Desserts Recipes':200, 'Dinner Recipes':201, 'Drinks Recipes':202}
+
+meals_ids = {}
+for meal in meals:
+    ids = c.execute('SELECT id FROM foodoclock_mealtype WHERE type =?', (meal,))
+    for i in ids:
+        id = i
+    meals_ids[meal] = id[0]
+
+diets_ids = {}
+for diet in diets:
+    ids = c.execute('SELECT id FROM foodoclock_diet WHERE diet =?', (diet,))
+    for i in ids:
+        id = i
+    diets_ids[diet] = id[0]
 
 if True:
     for r in migration:
@@ -260,7 +278,7 @@ if True:
         print(r['title'])
         for i in r['ingredients']:
             print(i)
-            recipe_ids = c.execute('SELECT auto_increment_id FROM foodoclock_recipe WHERE title = ? AND ingredients_list=?' , (r['title'],r['ingredients_list'],))
+            recipe_ids = c.execute('SELECT auto_increment_id FROM foodoclock_recipe WHERE title = ? AND ingredients_list=? AND link=?' , (r['title'],r['ingredients_list'],r['link'] ,))
             for id in recipe_ids:
                 r_id=id
             ing_id = c.execute('SELECT id FROM foodoclock_ingredient WHERE name =?' , (i,))

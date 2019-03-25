@@ -90,7 +90,11 @@ for row in c.execute('SELECT * FROM recipes'):
             recipe['preparation_time'] = 0 if row[12] is None else int(row[12].split(' ')[0])
         else:
             recipe['preparation_time'] = 0
+
         recipe['corpus'] = row[6]
+        if row[6] is None:
+            recipe['corpus']=''
+
         recipe['link'] = row[10]
         recipe['meta_description'] = row[2]
         recipe['image_url'] = row[11]
@@ -122,63 +126,67 @@ print(len(migration))
 
 
 diets = ['Diabetic Recipes', 'Gluten Free Recipes', 'Healthy Recipes', 'Low Calorie Recipes', 'Low Fat Recipes', 'Vegan Recipes', 'Vegetarian Recipes']
-meals = ['Appetizers & Snacks Recipes', 'Breakfast & Brunch Recipes', 'Dessert Recipes', 'Dinner Recipes', 'Drink Recipes']
-cuisines = ['Indian Recipes', 'Asian Recipes', 'Italian Recipes', 'Mexican Recipes', 'Southern Recipes']
+meals = ['Appetizers & Snacks Recipes', 'Breakfast & Brunch Recipes', 'Desserts Recipes', 'Dinner Recipes', 'Drinks Recipes']
+cuisines = ['Indian Recipes', 'Asian Recipes', 'Italian Recipes', 'Mexican Recipes', 'Southern Recipes', 'Japanese Recipes', 'Caribbean Recipes', 'American Recipes', 'British Recipes', 'Chinese Recipes',
+            'French Recipes', 'Greek Recipes', 'Mediterranean Recipes', 'Moroccan Recipes', 'Spanish Recipes',
+            'Thai Recipes', 'Turkish Recipes', 'Vietnamese Recipes']
 cuisines2 = ['Japanese Recipes', 'Caribbean Recipes', 'American Recipes', 'British Recipes', 'Chinese Recipes',
             'French Recipes', 'Greek Recipes', 'Mediterranean Recipes', 'Moroccan Recipes', 'Spanish Recipes',
             'Thai Recipes', 'Turkish Recipes', 'Vietnamese Recipes']
 
-
 # Copy data to website database
 conn = sqlite3.connect('db.sqlite3')
 c = conn.cursor()
-for cuisine in cuisines2:
-    print(cuisine)
-    try:
-        sql = '''INSERT INTO foodoclock_cuisine (cuisine) VALUES(?)'''
-        c.execute(sql, (cuisine,))
-    except sqlite3.IntegrityError as e:
-        print('sqlite error: ', e.args[0])  # column name is not unique
-    conn.commit()
-
-for meal in meals:
-    try:
-        sql = '''INSERT INTO foodoclock_mealtype (type) VALUES (?)'''
-        c.execute(sql, (meal, ))
-    except sqlite3.IntegrityError as e:
-        print('sqlite error: ', e.args[0])  # column name is not unique
-    conn.commit()
-
-
-for diet in diets:
-    try:
-        sql = '''INSERT INTO foodoclock_diet (diet) VALUES (?)'''
-        c.execute(sql, (diet,))
-    except sqlite3.IntegrityError as e:
-        print('sqlite error: ', e.args[0])  # column name is not unique
-    conn.commit()
+if True:
+    for cuisine in cuisines2:
+        print(cuisine)
+        try:
+            sql = '''INSERT INTO foodoclock_cuisine (cuisine) VALUES(?)'''
+            c.execute(sql, (cuisine,))
+        except sqlite3.IntegrityError as e:
+            print('sqlite error: ', e.args[0])  # column name is not unique
+        conn.commit()
 
 
 ingredients_to_save = set([x for x in ingredients_set if ingredients_set.count(x) > 1])
 print(len(ingredients_to_save))
 for ingredient in ingredients_to_save:
-    try:
-        sql = '''INSERT INTO foodoclock_ingredient (name) VALUES (?)'''
-        c.execute(sql, (ingredient,))
-    except sqlite3.IntegrityError as e:
-        print('sqlite error: ', e.args[0])  # column name is not unique
-    conn.commit()
+    flag=True
+    ids = c.execute('SELECT id FROM foodoclock_ingredient WHERE name =?', (ingredient,))
+    print(len(list(ids)))
+    if len(list(ids))==0:
+        flag=False
 
+    print(flag)
+    if flag:
+        try:
+            sql = '''INSERT INTO foodoclock_ingredient (name) VALUES (?)'''
+            c.execute(sql, (ingredient,))
+        except sqlite3.IntegrityError as e:
+            print('sqlite error: ', e.args[0])  # column name is not unique
+        conn.commit()
+#keyboard.wait("enter")
+# Recover ids
+cuisine_ids = {}
+for cuisine in cuisines:
+    ids = c.execute('SELECT id FROM foodoclock_cuisine WHERE cuisine =?', (cuisine,))
+    for i in ids:
+        id = i
+    cuisine_ids[cuisine] = id[0]
 
+meals_ids = {}
+for meal in meals:
+    ids = c.execute('SELECT id FROM foodoclock_mealtype WHERE type =?', (meal,))
+    for i in ids:
+        id = i
+    meals_ids[meal] = id[0]
 
-cuisine_ids = {'Indian Recipes': 155,'Asian Recipes':156,'Italian Recipes':157,'Mexican Recipes':158,'Southern Recipes':159,
-               'Japanese Recipes':160, 'Caribbean Recipes':161, 'American Recipes':162, 'British Recipes':163, 'Chinese Recipes':164,
-              'French Recipes':165, 'Greek Recipes':166, 'Mediterranean Recipes':167, 'Moroccan Recipes':168, 'Spanish Recipes':169,
-              'Thai Recipes':170, 'Turkish Recipes':171, 'Vietnamese Recipes':172
-}
-diets_ids =  {'Diabetic Recipes':234, 'Gluten Free Recipes':235, 'Healthy Recipes':236, 'Low Calorie Recipes':237, 'Low Fat Recipes':238, 'Vegan Recipes':239, 'Vegetarian Recipes':240}
-meals_ids =  {'Appetizers & Snacks Recipes':198, 'Breakfast & Brunch Recipes':199, 'Desserts Recipes':200, 'Dinner Recipes':201, 'Drinks Recipes':202}
-
+diets_ids = {}
+for diet in diets:
+    ids = c.execute('SELECT id FROM foodoclock_diet WHERE diet =?', (diet,))
+    for i in ids:
+        id = i
+    diets_ids[diet] = id[0]
 if True:
     for r in migration:
         if 'diet' in r:
@@ -211,7 +219,7 @@ if True:
         print(r['title'])
         for i in r['ingredients']:
             print(i)
-            recipe_ids = c.execute('SELECT auto_increment_id FROM foodoclock_recipe WHERE title = ? AND ingredients_list=?' , (r['title'],r['ingredients_list'],))
+            recipe_ids = c.execute('SELECT auto_increment_id FROM foodoclock_recipe WHERE title = ? AND ingredients_list=? AND link=?' , (r['title'],r['ingredients_list'], r['link'],))
             for id in recipe_ids:
                 r_id=id
             ing_id = c.execute('SELECT id FROM foodoclock_ingredient WHERE name =?' , (i,))
