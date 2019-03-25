@@ -17,7 +17,7 @@ class Ingredient(models.Model):
 
     @classmethod
     def getAllIngredients(cls):
-        return Ingredient.objects.getAll()
+        return Ingredient.objects.all()
 
     @classmethod
     def getIngredientsByNames(cls, names):

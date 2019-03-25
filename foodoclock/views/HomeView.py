@@ -43,48 +43,40 @@ def home(request):
     # Retrieve user preferences
     user_data = UserDetails.getDetailByUser(request.user)
 
-    # Get all recipes
-    recipes= Recipe.objects.all()
-    total=len(recipes)
-    sort_options = ['Sort by', 'Title', 'Time', 'Rating']
-    for r in recipes:
-        r.ingredients_display=eval(r.ingredients_list)
-        r.rating_display = int(r.rating)
-
-    shuffle(recipes)
-    paginator = Paginator(recipes, 10)  # Show 10 contacts per page
-
+    # Data to populate advanced filters
     cuisines = Cuisine.objects.all()
     meals = MealType.objects.all()
+    sort_options = ['Sort by', 'Title', 'Time', 'Rating']
+
+    # Search query has been performed
+    if request.POST and request.POST['query']:
+        query = request.POST['query']
+
+        parsed_query = query_parser(query)
+        recipes = retrieve_results(parsed_query)
+
+    else:
+        query = ""
+        # Get all recipes
+        recipes = Recipe.objects.all().order_by('?')
+
+    # Prepare some data to be displayed in search results
+    for r in recipes:
+        r.ingredients_display = eval(r.ingredients_list)
+        r.rating_display = int(r.rating)
+    total = len(recipes)
+
+    # Prepare paginator for search results
+    paginator = Paginator(recipes, 10)  # Show 10 contacts per page
     page = request.GET.get('page')
     rows = paginator.get_page(page)
 
-    if request.POST: # search has been performed
-        query = request.POST['query']
-
-        if query:
-            parsed_query = query_parser(query)
-
-            results = retrieve_results(parsed_query)
-
-            total = len(results)
-            for r in results:
-                r.ingredients_display = eval(r.ingredients_list)
-                r.rating_display = int(r.rating)
-
-            paginator = Paginator(results, 10)  # Show 10 contacts per page
-            page = request.GET.get('page')
-            rows = paginator.get_page(page)
-
-        return render(request, '../templates/home.html',
+    # Render results
+    return render(request, '../templates/home.html',
                       {'page': 1, 'rows': rows, 'total': total, 'sort': sort_options, 'cuisine': cuisines,
                        'meals': meals, 'query': query})
 
-    else:
-        return render(request, '../templates/home.html', {'page': 1, 'rows': rows, 'total': total,
-                        'sort': sort_options, 'cuisine': cuisines,'meals': meals})
-
-
+# Parse user query
 def query_parser(query_string):
     query = {}
     query['ingredients'] = []
@@ -158,6 +150,7 @@ def standardize(ingredients):
     return recipe
 
 
+# Retrieve results
 def retrieve_results(filters):
     ingredients = []
     not_ingredients = []
