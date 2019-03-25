@@ -1,10 +1,3 @@
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from django.core.paginator import Paginator
-from foodoclock.models.Recipe import Recipe
-from foodoclock.models.MealType import MealType
-from foodoclock.models.Cuisine import Cuisine
-from foodoclock.models.UserDetails import UserDetails
 from inflection import singularize
 import unidecode
 import re
@@ -34,65 +27,6 @@ for ss in stopfoods:
 
 for s in stop:
     stopWords.add(s)
-
-@login_required
-def home(request):
-
-    # Retrieve user preferences
-    user_data = UserDetails.getDetailByUser(request.user)
-
-    # Get all recipes
-    recipes= Recipe.objects.all()
-    total=len(recipes)
-    sort_options = ['Sort by', 'Title', 'Time', 'Rating']
-    for r in recipes:
-        r.ingredients_display=eval(r.ingredients_list)
-        r.rating_display = int(r.rating)
-
-    paginator = Paginator(recipes, 10)  # Show 10 contacts per page
-
-    cuisines = Cuisine.objects.all()
-    meals = MealType.objects.all()
-    page = request.GET.get('page')
-    rows = paginator.get_page(page)
-
-    if request.POST: # search has been performed
-        query = request.POST['query']
-
-        return render(request, '../templates/home.html',
-                      {'page': 1, 'rows': rows, 'total': total, 'sort': sort_options, 'cuisine': cuisines,
-                       'meals': meals, 'query': query})
-
-    else:
-        return render(request, '../templates/home.html', {'page': 1, 'rows': rows, 'total': total,
-                        'sort': sort_options, 'cuisine': cuisines,'meals': meals})
-
-
-def query_parser(query):
-    query['ingredients'] = []
-    query['title'] = ""
-    query['diet'] = []
-    query['cuisine'] = ""
-    query['meal_type'] = ""
-    query['sort'] = ""
-
-    parts = query.split(' ')
-    title = []
-    ingredients = []
-    for p in parts:
-        if '+' in p:
-            i = p.split('+')
-            ingredients.append((True, i[1]))
-        elif '-' in p:
-            i = p.split('-')
-            ingredients.append((False, i[1]))
-        else:
-            title.append(p)
-    query['ingredients'] = standardize(ingredients)
-    query['title'] = ' '.join(title)
-
-    return query
-
 
 # Standardize a list of ingredients
 def standardize(ingredients):
@@ -138,3 +72,24 @@ def standardize(ingredients):
             recipe.append((flag,temp))
 
     return recipe
+
+query='Potato salad +salmon -onions'
+parts = query.split(' ')
+ingredients = []
+title = []
+for p in parts:
+    if '+' in p:
+        i = p.split('+')
+        ingredients.append((True, i[1]))
+    elif '-' in p:
+        i = p.split('-')
+        ingredients.append((False, i[1]))
+    else:
+        title.append(p)
+for i in ingredients:
+    print(str(i[0]) +  " " + str(i[1]))
+ingredients=standardize(ingredients)
+for i in ingredients:
+    print(str(i[0]) +  " " + str(i[1]))
+
+print(' '.join(title))
