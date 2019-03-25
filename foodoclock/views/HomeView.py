@@ -8,6 +8,7 @@ from foodoclock.models.UserDetails import UserDetails
 from foodoclock.models.Ingredient import Ingredient
 from inflection import singularize
 import unidecode
+from random import shuffle
 import re
 from textblob import TextBlob
 from nltk.corpus import stopwords
@@ -50,6 +51,7 @@ def home(request):
         r.ingredients_display=eval(r.ingredients_list)
         r.rating_display = int(r.rating)
 
+    shuffle(recipes)
     paginator = Paginator(recipes, 10)  # Show 10 contacts per page
 
     cuisines = Cuisine.objects.all()
@@ -155,6 +157,7 @@ def standardize(ingredients):
 
     return recipe
 
+
 def retrieve_results(filters):
     ingredients = []
     not_ingredients = []
@@ -166,3 +169,15 @@ def retrieve_results(filters):
     ingredients_ids = Ingredient.getIngredientsByNames(ingredients)
     not_ingredients_ids = Ingredient.getIngredientsByNames(not_ingredients)
     return Recipe.getRecipesMatchingIngredients(not_ingredients_ids,ingredients_ids)
+
+
+def rank_results(results):
+    pass
+
+
+def sort_results(results):
+    pass
+
+
+def filter_results(results, filters):
+    pass
