@@ -86,7 +86,7 @@ for file in filenames:
             temp = re.sub(r"^\s+", "", temp)
             temp = re.sub(r"\s+$", "", temp)
             print(temp)
-            if temp == "":
+            if temp != "":
                 recipe.append(temp)
             #print("----------------------------")
         output.append({"cuisine": data["attributes"]["cuisine"][0], "ingredients": list(set(recipe))})

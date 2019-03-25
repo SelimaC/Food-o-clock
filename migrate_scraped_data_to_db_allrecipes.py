@@ -16,7 +16,16 @@ stop = ['cups', 'cup', 'oz', 'pound', 'pounds', 'lb', 'x', 'garnish', 'garnishes
 
 foodfile = open("basicfood.txt", "r")
 allow = foodfile.read().split('\n')
+foodfile.close()
+
+file = open("stopfoods10.txt", "r")
+stopfoods = file.read().split('\n')
+file.close()
+
 tags = ['JJ', 'JJS', 'JJR', 'NN', 'NNS', 'NNP', 'NNPS']
+for ss in stopfoods:
+    stopWords.add(ss)
+
 for s in stop:
     stopWords.add(s)
 
@@ -27,7 +36,8 @@ def standardize(ingredients):
     recipe = []
     for ing in ingredients:
         temp = ''
-
+        # print(ing)
+        # ing = '1 1/4 cups all-purpose flour (about 5 1/2 ounces)'
         ing = ing.lower()
         ing = unidecode.unidecode(ing)
 
@@ -42,7 +52,12 @@ def standardize(ingredients):
         ing = re.sub(r"(/)+", "", ing)
         commasplit = re.split(r"\,", ing)
         ing = commasplit[0]
-        ing = ing.split(" or ")[0]
+        ing = ing.replace("*", "")
+        ing = ing.replace("+", "")
+        ing = ing.replace("-", "")
+        ing = ing.replace(".", "")
+        ing = ing.replace(":", "")
+        ing = ing.replace("(", "")
         ing = ing.split("http")[0]
 
         wi = TextBlob(ing)
@@ -51,7 +66,7 @@ def standardize(ingredients):
 
         for pos in tagbag:
             if (pos[1] in tags) or (singularize(pos[0]) in allow):
-                if pos[0] not in stopWords:
+                if singularize(pos[0]) not in stopWords:
                     temp = temp + " " + singularize(pos[0])
         temp = re.sub(r"^\s+", "", temp)
         temp = re.sub(r"\s+$", "", temp)
@@ -59,7 +74,6 @@ def standardize(ingredients):
         if temp != "":
             recipe.append(temp)
             ingredients_set.append(temp)
-
 
     return list(set(recipe))
 
@@ -90,7 +104,13 @@ for row in c.execute('SELECT * FROM Meal'):
         recipe['image_url'] = row[8]
         recipe['rating'] = 0 if row[9] is None else int(row[9])
 
-        migration.append(recipe)
+        flag = True
+        for m in migration:
+            if m['title'] == recipe['title'] or m['link'] == recipe['link']:
+                flag = False
+                break
+        if flag:
+            migration.append(recipe)
 
 print("Diet table \n")
 for row in c.execute('SELECT * FROM Diet'):
@@ -211,8 +231,8 @@ for diet in diets:
         print('sqlite error: ', e.args[0])  # column name is not unique
     conn.commit()
 
-
-ingredients_to_save = set([x for x in ingredients_set if ingredients_set.count(x) > 1])
+print(len(ingredients_set))
+ingredients_to_save = set(ingredients_set)
 print(len(ingredients_to_save))
 for ingredient in ingredients_to_save:
     try:
@@ -281,7 +301,7 @@ if True:
             recipe_ids = c.execute('SELECT auto_increment_id FROM foodoclock_recipe WHERE title = ? AND ingredients_list=? AND link=?' , (r['title'],r['ingredients_list'],r['link'] ,))
             for id in recipe_ids:
                 r_id=id
-            ing_id = c.execute('SELECT id FROM foodoclock_ingredient WHERE name =?' , (i,))
+            ing_id = c.execute('SELECT id FROM foodoclock_ingredient WHERE name = ?' , (i,))
             for id in ing_id:
                 i_id=id
             print(r_id)
@@ -291,6 +311,7 @@ if True:
                 c.execute(sql, ( r_id[0],i_id[0],))
             except sqlite3.IntegrityError as e:
                 print('sqlite error: ', e.args[0])  # column name is not unique
+            #keyboard.wait("enter")
             conn.commit()
         #keyboard.wait("enter")
 
