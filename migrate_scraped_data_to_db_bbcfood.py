@@ -16,7 +16,16 @@ stop = ['cups', 'cup', 'oz', 'pound', 'pounds', 'lb', 'x', 'garnish', 'garnishes
 
 foodfile = open("basicfood.txt", "r")
 allow = foodfile.read().split('\n')
+foodfile.close()
+
+file = open("stopfoods10.txt", "r")
+stopfoods = file.read().split('\n')
+file.close()
+
 tags = ['JJ', 'JJS', 'JJR', 'NN', 'NNS', 'NNP', 'NNPS']
+for ss in stopfoods:
+    stopWords.add(ss)
+
 for s in stop:
     stopWords.add(s)
 
@@ -27,7 +36,8 @@ def standardize(ingredients):
     recipe = []
     for ing in ingredients:
         temp = ''
-
+        # print(ing)
+        # ing = '1 1/4 cups all-purpose flour (about 5 1/2 ounces)'
         ing = ing.lower()
         ing = unidecode.unidecode(ing)
 
@@ -42,7 +52,12 @@ def standardize(ingredients):
         ing = re.sub(r"(/)+", "", ing)
         commasplit = re.split(r"\,", ing)
         ing = commasplit[0]
-        ing = ing.split(" or ")[0]
+        ing = ing.replace("*", "")
+        ing = ing.replace("+", "")
+        ing = ing.replace("-", "")
+        ing = ing.replace(".", "")
+        ing = ing.replace(":", "")
+        ing = ing.replace("(", "")
         ing = ing.split("http")[0]
 
         wi = TextBlob(ing)
@@ -51,7 +66,7 @@ def standardize(ingredients):
 
         for pos in tagbag:
             if (pos[1] in tags) or (singularize(pos[0]) in allow):
-                if pos[0] not in stopWords:
+                if singularize(pos[0]) not in stopWords:
                     temp = temp + " " + singularize(pos[0])
         temp = re.sub(r"^\s+", "", temp)
         temp = re.sub(r"\s+$", "", temp)
@@ -59,7 +74,6 @@ def standardize(ingredients):
         if temp != "":
             recipe.append(temp)
             ingredients_set.append(temp)
-
 
     return list(set(recipe))
 
@@ -119,7 +133,13 @@ for row in c.execute('SELECT * FROM recipes'):
                 if 'Healthy' in row[4]:
                     recipe['diet'] = 'Healthy Recipes'
 
-        migration.append(recipe)
+        flag = True
+        for m in migration:
+            if m['title'] == recipe['title'] or m['link'] == recipe['link']:
+                flag = False
+                break
+        if flag:
+            migration.append(recipe)
 
 conn.close()
 print(len(migration))
@@ -147,17 +167,17 @@ if True:
             print('sqlite error: ', e.args[0])  # column name is not unique
         conn.commit()
 
-
-ingredients_to_save = set([x for x in ingredients_set if ingredients_set.count(x) > 1])
+print(len(ingredients_set))
+ingredients_to_save = list(set(ingredients_set))
 print(len(ingredients_to_save))
+keyboard.wait("enter")
 for ingredient in ingredients_to_save:
     flag=True
-    ids = c.execute('SELECT id FROM foodoclock_ingredient WHERE name =?', (ingredient,))
-    print(len(list(ids)))
-    if len(list(ids))==0:
+    ids = c.execute('SELECT id FROM foodoclock_ingredient WHERE name = ?', (ingredient,))
+
+    if c.fetchone()!=None:
         flag=False
 
-    print(flag)
     if flag:
         try:
             sql = '''INSERT INTO foodoclock_ingredient (name) VALUES (?)'''

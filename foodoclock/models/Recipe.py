@@ -3,7 +3,7 @@ from foodoclock.models.Ingredient import Ingredient
 from foodoclock.models.MealType import MealType
 from foodoclock.models.Diet import Diet
 from foodoclock.models.Cuisine import Cuisine
-
+from django.db.models import Q
 
 class Recipe(models.Model):
     auto_increment_id = models.AutoField(primary_key=True)
@@ -48,6 +48,14 @@ class Recipe(models.Model):
     @classmethod
     def getRecipesByDiet(cls, diet):
         return Recipe.objects.filter(diet=diet)
+
+    @classmethod
+    def getRecipesByIngredients(cls, ingredients):
+        return Recipe.objects.filter(ingredients__in=ingredients)
+
+    @classmethod
+    def getRecipesMatchingIngredients(cls, not_ingredients, ingredients):
+        return Recipe.objects.filter(ingredients__in=ingredients).exclude(ingredients__in=not_ingredients)
 
     def __str__(self):
         return "Title: " + str(self.title)

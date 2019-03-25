@@ -5,8 +5,10 @@ from foodoclock.models.Recipe import Recipe
 from foodoclock.models.MealType import MealType
 from foodoclock.models.Cuisine import Cuisine
 from foodoclock.models.UserDetails import UserDetails
+from foodoclock.models.Ingredient import Ingredient
 from inflection import singularize
 import unidecode
+from random import shuffle
 import re
 from textblob import TextBlob
 from nltk.corpus import stopwords
@@ -22,7 +24,16 @@ stop = ['cups', 'cup', 'oz', 'pound', 'pounds', 'lb', 'x', 'garnish', 'garnishes
 
 foodfile = open("basicfood.txt", "r")
 allow = foodfile.read().split('\n')
+foodfile.close()
+
+file = open("stopfoods10.txt", "r")
+stopfoods = file.read().split('\n')
+file.close()
+
 tags = ['JJ', 'JJS', 'JJR', 'NN', 'NNS', 'NNP', 'NNPS']
+for ss in stopfoods:
+    stopWords.add(ss)
+
 for s in stop:
     stopWords.add(s)
 
@@ -32,32 +43,42 @@ def home(request):
     # Retrieve user preferences
     user_data = UserDetails.getDetailByUser(request.user)
 
-    # Get all recipes
-    recipes= Recipe.objects.all()
-    total=len(recipes)
-    sort_options = ['Sort by', 'Title', 'Preparation time']
-    for r in recipes:
-        r.ingredients_list=r.ingredients.all()
-
-    paginator = Paginator(recipes, 10)  # Show 10 contacts per page
-
+    # Data to populate advanced filters
     cuisines = Cuisine.objects.all()
     meals = MealType.objects.all()
+    sort_options = ['Sort by', 'Title', 'Time', 'Rating']
+
+    # Search query has been performed
+    if request.POST and request.POST['query']:
+        query = request.POST['query']
+
+        parsed_query = query_parser(query)
+        recipes = retrieve_results(parsed_query)
+
+    else:
+        query = ""
+        # Get all recipes
+        recipes = Recipe.objects.all().order_by('?')
+
+    # Prepare some data to be displayed in search results
+    for r in recipes:
+        r.ingredients_display = eval(r.ingredients_list)
+        r.rating_display = int(r.rating)
+    total = len(recipes)
+
+    # Prepare paginator for search results
+    paginator = Paginator(recipes, 10)  # Show 10 contacts per page
     page = request.GET.get('page')
     rows = paginator.get_page(page)
 
-    if request.POST: # search has been performed
-        query = request.POST['query']
-        return render(request, '../templates/home.html',
+    # Render results
+    return render(request, '../templates/home.html',
                       {'page': 1, 'rows': rows, 'total': total, 'sort': sort_options, 'cuisine': cuisines,
                        'meals': meals, 'query': query})
 
-    else:
-        return render(request, '../templates/home.html', {'page': 1, 'rows': rows, 'total': total,
-                        'sort': sort_options, 'cuisine': cuisines,'meals': meals})
-
-
-def query_parser(query):
+# Parse user query
+def query_parser(query_string):
+    query = {}
     query['ingredients'] = []
     query['title'] = ""
     query['diet'] = []
@@ -65,15 +86,31 @@ def query_parser(query):
     query['meal_type'] = ""
     query['sort'] = ""
 
+    parts = query_string.split(' ')
+    title = []
+    ingredients = []
+    for p in parts:
+        if '+' in p:
+            i = p.split('+')
+            ingredients.append((True, i[1]))
+        elif '-' in p:
+            i = p.split('-')
+            ingredients.append((False, i[1]))
+        else:
+            title.append(p)
+    query['ingredients'] = standardize(ingredients)
+    query['title'] = ' '.join(title)
+
     return query
 
 
 # Standardize a list of ingredients
 def standardize(ingredients):
     recipe = []
-    for ing in ingredients:
+    for flag,ing in ingredients:
         temp = ''
-
+        # print(ing)
+        # ing = '1 1/4 cups all-purpose flour (about 5 1/2 ounces)'
         ing = ing.lower()
         ing = unidecode.unidecode(ing)
 
@@ -88,7 +125,12 @@ def standardize(ingredients):
         ing = re.sub(r"(/)+", "", ing)
         commasplit = re.split(r"\,", ing)
         ing = commasplit[0]
-        ing = ing.split(" or ")[0]
+        ing = ing.replace("*", "")
+        ing = ing.replace("+", "")
+        ing = ing.replace("-", "")
+        ing = ing.replace(".", "")
+        ing = ing.replace(":", "")
+        ing = ing.replace("(", "")
         ing = ing.split("http")[0]
 
         wi = TextBlob(ing)
@@ -97,12 +139,38 @@ def standardize(ingredients):
 
         for pos in tagbag:
             if (pos[1] in tags) or (singularize(pos[0]) in allow):
-                if pos[0] not in stopWords:
+                if singularize(pos[0]) not in stopWords:
                     temp = temp + " " + singularize(pos[0])
         temp = re.sub(r"^\s+", "", temp)
         temp = re.sub(r"\s+$", "", temp)
 
         if temp != "":
-            recipe.append(temp)
+            recipe.append((flag,temp))
 
-    return list(set(recipe))
+    return recipe
+
+
+# Retrieve results
+def retrieve_results(filters):
+    ingredients = []
+    not_ingredients = []
+    for i in filters['ingredients']:
+        if i[0]:
+            ingredients.append(i[1])
+        else:
+            not_ingredients.append(i[1])
+    ingredients_ids = Ingredient.getIngredientsByNames(ingredients)
+    not_ingredients_ids = Ingredient.getIngredientsByNames(not_ingredients)
+    return Recipe.getRecipesMatchingIngredients(not_ingredients_ids,ingredients_ids)
+
+
+def rank_results(results):
+    pass
+
+
+def sort_results(results):
+    pass
+
+
+def filter_results(results, filters):
+    pass
