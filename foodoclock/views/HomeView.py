@@ -37,7 +37,8 @@ def home(request):
     total=len(recipes)
     sort_options = ['Sort by', 'Title', 'Preparation time']
     for r in recipes:
-        r.ingredients_list=r.ingredients.all()
+        r.ingredients_display=eval(r.ingredients_list)
+        r.rating_display = int(r.rating)
 
     paginator = Paginator(recipes, 10)  # Show 10 contacts per page
 

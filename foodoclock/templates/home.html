@@ -13,7 +13,7 @@
 <style>
     main {
         background-color: #f2f2f2;
-        height: 4500px;
+        height: 3900px;
     }
 
     #logo {
@@ -91,6 +91,7 @@
     }
     .recipe{
         width: 90%;
+        height: 7%;
         background-color: #ffffff;
     }
     .recipe .ImageContainer{
@@ -99,6 +100,7 @@
         margin-left:10px;
     }
     .recipe .title{
+        color: #006652;
         margin-top:20px;
         font-size:20px;
         font-weight: lighter;
@@ -106,8 +108,13 @@
     .recipe .description{
         margin-right: 20px;
     }
-    .recipe a:link {
+
+    #linkPage {
         color:#00997a;
+        text-decoration: none;
+    }
+    .clickableContainer{
+
         text-decoration: none;
     }
     .recipe a:visited {
@@ -120,10 +127,11 @@
         text-decoration: underline;
     }
     .Rating {
-        float:right;
-        margin-top:-120px;
+        position: relative;
+        float: right;
+        top: 10px;
     }
-    .checked {
+    .Rating .checked {
         color: #00cca3;
     }
     h5 {
@@ -234,6 +242,14 @@
         float:right;
         margin-right:-10px;
     }
+
+    .ingredientsDisplay ul {
+        box-sizing: inherit;
+        columns: 3;
+        -webkit-columns: 3;
+        -moz-columns: 3;
+        font-size: 13px;
+    }
 </style>
 
 
@@ -312,25 +328,27 @@
     <br><hr>
     <div  id="results">
           {% for r in rows %}
-            <a href="{{r.link}}" target="_blank" title="{{r.title}}">
-                <div class="recipe w3-panel w3-card">
+            <a href="{{r.link}}" class="clickableContainer"  target="_blank" title="{{r.title}}">
+              <div class="recipe w3-panel w3-card">
               <div class="ImageContainer"> <img src='{{r.image_url}}' width="150px" height="150px"/></div>
+                  
+              <div class="Rating">
+                  <span class="fa fa-star  {% if r.rating_display >= 1 %} checked{% endif %} "></span>
+                  <span class="fa fa-star {% if r.rating_display >= 2 %} checked{% endif %}"></span>
+                  <span class="fa fa-star {% if r.rating_display >= 3 %} checked{% endif %}"></span>
+                  <span class="fa fa-star {% if r.rating_display >= 4 %} checked{% endif %}"></span>
+                  <span class="fa fa-star {% if r.rating_display >= 5 %} checked{% endif %}"></span>
+              </div>
               <div class="InformationContainer">
                   <div class="title">{{r.title}}</div>
-                  <a href="{{r.link}}" target="_blank" title="See recipe">{{r.link}}</a>
+                  <a id ="linkPage" href="{{r.link}}" target="_blank" title="See recipe">{{r.link}}</a>
                   <div class="description">{{r.meta_description}}</div>
-                  <div>
-                      {% for i in r.ingredients_list %}
-                      {{i.name}} -
+                  <div class="ingredientsDisplay">
+                      <ul>
+                      {% for i in r.ingredients_display %}
+                          <li class="ingredient">{{i}} </li>
                       {% endfor %}
-                  </div>
-
-                  <div class="Rating">
-                        <span class="fa fa-star  {% if r.rating >= 1 %} checked{% endif %} "></span>
-                        <span class="fa fa-star {% if r.rating >= 2 %} checked{% endif %}"></span>
-                        <span class="fa fa-star {% if r.rating >= 3 %} checked{% endif %}"></span>
-                        <span class="fa fa-star {% if r.rating >= 4 %} checked{% endif %}"></span>
-                        <span class="fa fa-star {% if r.rating >= 5 %} checked{% endif %}"></span>
+                      </ul>
                   </div>
 
                   <div class="diet"> {% if r.diet.diet == "Vegan" %}<img src="{% static 'vegan.png' %}" width="45px" height="45px" align="middle"/> {% endif %}</div>
