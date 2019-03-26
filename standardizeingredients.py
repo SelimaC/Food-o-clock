@@ -56,13 +56,13 @@ for file in filenames:
             ing = ing.lower()
             ing = unidecode.unidecode(ing)
 
-            ing = ing.split(" or ")[0]
+            #ing = ing.split(" or ")[0]
             ing = re.sub(r" ?\([^)]+\)", " ", ing)
             ing = re.sub(r"([0-9]*-ounces)+", " ", ing)
             ing = re.sub(r"([0-9]*-ounce)+", " ", ing)
             ing = re.sub(r"([0-9]*-inches)+", " ", ing)
             ing = re.sub(r"([0-9]*-inch)+", " ", ing)
-            ing = re.sub(r"([0-9]*)+", " ", ing)
+            ing = re.sub(r"([0-9])+", " ", ing)
             ing = re.sub(r"(-)+", " ", ing)
             ing = re.sub(r"(/)+", " ", ing)
             commasplit = re.split(r"\,", ing)
