@@ -137,7 +137,7 @@
        color: #00997a;
     }
     .Sort{
-        margin-right:15%;
+        margin-right:13%;
         float:right;
     }
     .Sort select{
@@ -166,6 +166,8 @@
         color: #fff;
         border-radius: 5px;
         cursor: pointer;
+        float:right;
+        margin-right: 15px;
         font-size: 15px;
     }
 
@@ -272,25 +274,27 @@
                  </button>
             </div>
         </div>
-    </form>
 
 
 
         <br>
         {% if rows %}
         </br></br>
+
         <div class="Options" align="middle">
             <div class="Total"> Search Results ({{total}} results found)</div>
 
                 <div class="Sort list">
-                    <select id="sort">
+
+                    <select id="sort" name="sort">
                         {% for i in sort %}
                             <option name="sort" value="{{ i }}">{{ i }}</option>
                         {% endfor %}
                     </select>
-                    <button class="collapsible filterButton">Advanced Filters</button>
                 </div>
 
+
+                <button class="collapsible filterButton">Advanced Filters</button>
         </div>
         <div class="content" align="middle">
             <div id="cuisines" class="left">
@@ -329,7 +333,7 @@
             </div>
         </div>
 
-
+    </form>
     <br><hr>
     <div  id="results">
           {% for r in rows %}

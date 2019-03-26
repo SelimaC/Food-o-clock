@@ -19,3 +19,7 @@ Run server at http://127.0.0.1:8000/ :
 The url is http://127.0.0.1:8000/admin/
 username: `admin`
 password: `master2019` -->
+
+
+# Install new apps
+`python settings.py install`

@@ -5,10 +5,11 @@ from foodoclock.models.Recipe import Recipe
 from foodoclock.models.MealType import MealType
 from foodoclock.models.Cuisine import Cuisine
 from foodoclock.models.UserDetails import UserDetails
+from django.http import JsonResponse
 from foodoclock.models.Ingredient import Ingredient
 from inflection import singularize
 import unidecode
-from random import shuffle
+from django.core import serializers
 import re
 from textblob import TextBlob
 from nltk.corpus import stopwords
@@ -48,17 +49,37 @@ def home(request):
     meals = MealType.objects.all()
     sort_options = ['Sort by', 'Title', 'Time', 'Rating']
 
+
     # Search query has been performed
-    if request.POST and request.POST['query']:
-        query = request.POST['query']
+    if 'query' in request.POST:
+        if request.POST and request.POST['query']:
+            query = request.POST['query']
 
-        parsed_query = query_parser(query)
-        recipes = retrieve_results(parsed_query)
-
+            parsed_query = query_parser(query)
+            recipes = retrieve_results(parsed_query)
+        else:
+            query = ""
+            # Get all recipes
+            recipes = Recipe.objects.all().order_by('?')
     else:
         query = ""
         # Get all recipes
         recipes = Recipe.objects.all().order_by('?')
+
+
+    sort = request.POST.get('sort', None)
+    if sort is not None:
+        recipes=sort_results(recipes, sort)
+
+    filter_cuisine = request.POST.get('cuisine', None)
+    if filter_cuisine is not None:
+        pass
+    filter_meal = request.POST.get('meal', None)
+    if filter_meal is not None:
+        pass
+    filter_difficulty = request.POST.get('difficulty', None)
+    if filter_difficulty is not None:
+        pass
 
     # Prepare some data to be displayed in search results
     for r in recipes:
@@ -75,6 +96,7 @@ def home(request):
     return render(request, '../templates/home.html',
                       {'page': 1, 'rows': rows, 'total': total, 'sort': sort_options, 'cuisine': cuisines,
                        'meals': meals, 'query': query})
+
 
 # Parse user query
 def query_parser(query_string):
@@ -168,8 +190,19 @@ def rank_results(results):
     pass
 
 
-def sort_results(results):
-    pass
+def sort_results(results, sort_option):
+
+    if sort_option == 'Title':
+        return results.order_by('title')
+
+    if sort_option == 'Time':
+        return results.order_by('preparation_time')
+
+    if sort_option == 'Rating':
+        return results.order_by('-rating')
+
+    return results
+
 
 
 def filter_results(results, filters):
