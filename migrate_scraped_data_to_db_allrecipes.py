@@ -8,11 +8,11 @@ from nltk.corpus import stopwords
 ingredients_set = []
 stopWords = set(stopwords.words('english'))
 
-stop = ['cups', 'cup', 'oz', 'pound', 'pounds', 'lb', 'x', 'garnish', 'garnishes', 'teaspoon', 'teaspoons', 'tablespoon', 'optional',
-        'tablespoons', 'tsp', 'tbs','hard', 'medium', 'large', 'stick', 'package', 'container', 'dash', 'pinch', 'frozen','bunch', 'piece', 'pieces', 'skinless','boneless',
-        'grated', 'drop', 'drops','quartered', 'half', 'halved','ounces', 'ounce','halves','delicious',
-        'diameter','step','ml','*' 'recipe', 'strip', 'strips', 'inch', 'cms', 'inches', 'fresh', 'dry', 'thick', 'thin', 'slice', 'slices', 'c', 'sprigs',
-        'jumbo', 'can','pkg','quarter','cloves','version','tbsp','additional', 'cans','tenders', 'small','plain' 'bottle', 'beating','bottles','glass', 'glasses', 'huge', 'chopped', 'bone-in', 'skin-on', 'chunks']
+stop = ['cups','old','heart','skirt','new','style','leaf','leafe','heavy', 'striped','firm','whole','thumbsized','mediumsize','litre','liter','smallsize','largesize','light','bag','bags','tub','tubs','vegetable','sharp','ground','cup', 'oz', 'pound', 'pounds', 'lb', 'x', 'garnish', 'garnishes', 'teaspoon', 'teaspoons', 'tablespoon', 'optional','kg','gms','g','extra','warm','cold','lean','recipe','filling','*','precook','shredded','shred',
+        'quart','tablespoons', 'tsp', 'tbs','hard', 'medium', 'large', 'stick', 'package', 'container', 'dash', 'pinch', 'frozen','bunch', 'piece', 'pieces', 'skinless','boneless','bar','premium','supreme','fatfree','doublecut','peeled','cap','petite','clove','cloves','handful',
+        'grated','skirt','drop', 'drops','quartered', 'half', 'halved','ounces', 'ounce','halves','delicious','longgrain','t. ','splash','rotisserie','course','leaf','leaves','pinch','crispy','c.','coarse','jar','head','gr','fajitum', 'size','young','tip','partskim',
+        'diameter','step','ml','boiling','tender','recipe', 'strip', 'strips', 'inch', 'cms', 'inches', 'fresh', 'dry', 'thick', 'thin', 'slice', 'slices', 'c','sprig', 'sprigs','l','ltr','deep','frying','stalk','homemade','scoop','favourite','baby','goodquality','topping',
+        'jumbo', 'can','pkg','quarter','cloves','version','tbsp','additional', 'cans','tenders', 'small','plain', 'bottle', 'beating','bottles','glass', 'glasses', 'huge', 'chopped','boneless','bonein', 'bone-in', 'skin-on','chunk', 'chunks']
 
 foodfile = open("basicfood.txt", "r")
 allow = foodfile.read().split('\n')
@@ -42,22 +42,22 @@ def standardize(ingredients):
         ing = unidecode.unidecode(ing)
 
         ing = ing.split(" or ")[0]
-        ing = re.sub(r" ?\([^)]+\)", "", ing)
-        ing = re.sub(r"([0-9]*-ounces)+", "", ing)
-        ing = re.sub(r"([0-9]*-ounce)+", "", ing)
-        ing = re.sub(r"([0-9]*-inches)+", "", ing)
-        ing = re.sub(r"([0-9]*-inch)+", "", ing)
-        ing = re.sub(r"([0-9]*)+", "", ing)
-        ing = re.sub(r"(-)+", "", ing)
-        ing = re.sub(r"(/)+", "", ing)
+        ing = re.sub(r" ?\([^)]+\)", " ", ing)
+        ing = re.sub(r"([0-9]*-ounces)+", " ", ing)
+        ing = re.sub(r"([0-9]*-ounce)+", " ", ing)
+        ing = re.sub(r"([0-9]*-inches)+", " ", ing)
+        ing = re.sub(r"([0-9]*-inch)+", " ", ing)
+        ing = re.sub(r"([0-9])+", " ", ing)
+        ing = re.sub(r"(-)+", " ", ing)
+        ing = re.sub(r"(/)+", " ", ing)
         commasplit = re.split(r"\,", ing)
         ing = commasplit[0]
-        ing = ing.replace("*", "")
-        ing = ing.replace("+", "")
-        ing = ing.replace("-", "")
-        ing = ing.replace(".", "")
-        ing = ing.replace(":", "")
-        ing = ing.replace("(", "")
+        ing = ing.replace("*", " ")
+        ing = ing.replace("+", " ")
+        ing = ing.replace("-", " ")
+        ing = ing.replace(".", " ")
+        ing = ing.replace(":", " ")
+        ing = ing.replace("(", " ")
         ing = ing.split("http")[0]
 
         wi = TextBlob(ing)

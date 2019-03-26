@@ -1,4 +1,4 @@
-artichoke
+﻿artichoke
 aubergine 
 eggplant
 asparagus
@@ -16,6 +16,9 @@ broad beans
 chickpeas
 garbanzos
 ceci beans
+yogurt
+milk
+curd
 green beans
 kidney beans
 lentils
