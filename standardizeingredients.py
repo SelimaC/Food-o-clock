@@ -10,11 +10,11 @@ from inflection import singularize
 import sklearn
 import unidecode
 from textblob import TextBlob
-from nltk.corpus import stopwords
+#from nltk.corpus import stopwords
 
-stopWords = set(stopwords.words('english'))
-print(type(stopWords))
-
+#stopWords = set(stopwords.words('english'))
+#print(type(stopWords))
+"""
 stop = ['cups','nonfat','spicy','crushed','grated','food','cube','torn','big','small','pint','top','serve','thigh','shoulder','leg','breast','wing','fine','quality','gram','clove','box','nonstick','stick','non','link','use','brand','philadelphia','instant','ready','tasty','easy','link','bulk','huge',
         'old','heart','skirt','new','style','leaf','leafe','heavy', 'striped','firm','whole','thumbsized','mediumsize','litre','liter','smallsize','largesize','light','bag','bags','tub','tubs','vegetable','sharp','ground','cup', 'oz', 'pound', 'pounds', 'lb', 'x', 'garnish', 'garnishes', 'teaspoon', 'teaspoons', 'tablespoon', 'optional','kg','gms','g','extra','warm','cold','lean','recipe','filling','*','precook','shredded','shred',
         'quart','tablespoons', 'tsp', 'tbs','hard', 'medium', 'large', 'stick', 'package', 'section','block','fat-free','flat','cm','tb','season','tin','mexican','leftover','gm','part','skim','confectioner','squeeze','crunchy','raw','uncooked','ripe','choice','chef','professional','refrigerated',
@@ -29,34 +29,28 @@ stop=list(set(stop))
 
 for s in stop:
     stopss.append(singularize(s))
+"""
 
 print("done")
 foodfile = open("basicfood.txt", "r")
 allow = foodfile.read().split('\n')
 foodfile.close()
+
+foodfiles = open("stopfoodwords.txt", "r")
+stopWords = foodfiles.read().split('\n')
+foodfiles.close()
+
 print(allow)
 file = open("stopfoods10.txt", "r")
 stopfoods = file.read().split('\n')
 file.close()
 
+stopWords = set(stopWords)
+
 tags = ['JJ', 'JJS', 'JJR', 'NN', 'NNS', 'NNP', 'NNPS']
 for ss in stopfoods:
     stopWords.add(ss)
 
-for s in stopss:
-    stopWords.add(s)
-
-for s in stop:
-    stopWords.add(s)
-
-stopfoodwords=list(stopWords)
-with open('stopfoodwords.txt', 'w') as f:
-    for item in stopfoodwords:
-        if item == stopfoodwords[-1]:
-            f.write("%s" % item.lower())
-        else:
-            f.write("%s\n" % item.lower())
-f.close()
 
 output = []
 traindata = []
@@ -125,7 +119,6 @@ for file in filenames:
             for pos in  tagbag:
                 if (pos[1] in tags) or (singularize(pos[0]) in allow):
                     if singularize(pos[0]) not in stopWords:
-
                         #print(singularize(pos[0]))
                         temp = temp + " " + singularize(pos[0])
             temp = temp.strip()
