@@ -64,7 +64,7 @@ def home(request):
     # Data to populate advanced filters
     cuisines = Cuisine.objects.all()
     meals = MealType.objects.all()
-    sort_options = ['Sort by', 'Title', 'Time', 'Rating']
+    sort_options = [('Sort by', True), ('Title', False), ('Time',False), ('Rating', False)]
 
 
     # Search query has been performed
@@ -87,6 +87,14 @@ def home(request):
     sort = request.POST.get('sort', None)
     if sort is not None:
         recipes=sort_results(recipes, sort)
+        if sort == 'Title':
+            sort_options = [('Sort by', False), ('Title', True), ('Time', False), ('Rating', False)]
+        if sort == 'Sort by':
+            sort_options = [('Sort by', True), ('Title', False), ('Time', False), ('Rating', False)]
+        if sort == 'Rating':
+            sort_options = [('Sort by', False), ('Title', False), ('Time', False), ('Rating', True)]
+        if sort == 'Time':
+            sort_options = [('Sort by', False), ('Title', False), ('Time', True), ('Rating', False)]
 
     filter_cuisine = request.POST.get('cuisine', None)
     if filter_cuisine is not None:
@@ -212,7 +220,10 @@ def sort_results(results, sort_option):
         return results.order_by('title')
 
     if sort_option == 'Time':
-        return results.order_by('preparation_time')
+        return results.extra(
+            select={'fieldsum':'preparation_time + cook_time'},
+            order_by=('fieldsum',)
+        )
 
     if sort_option == 'Rating':
         return results.order_by('-rating')

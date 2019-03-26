@@ -287,8 +287,8 @@
                 <div class="Sort list">
 
                     <select id="sort" name="sort">
-                        {% for i in sort %}
-                            <option name="sort" value="{{ i }}">{{ i }}</option>
+                        {% for i, flag in sort %}
+                            <option name="sort" {% if flag %} selected="selected"{% endif %} value="{{ i }}">{{ i }}</option>
                         {% endfor %}
                     </select>
                 </div>
