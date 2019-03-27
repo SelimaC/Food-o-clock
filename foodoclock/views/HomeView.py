@@ -90,6 +90,8 @@ def home(request):
 
 
     sort = request.POST.get('sort', None)
+    if 's' in request.GET:
+        sort = request.GET.get('s')
     if sort is not None:
         recipes=sort_results(recipes, sort)
         if sort == 'Title':
@@ -127,7 +129,7 @@ def home(request):
     # Render results
     return render(request, '../templates/home.html',
                       {'page': 1, 'rows': rows, 'total': total, 'sort': sort_options, 'cuisine': cuisines,
-                       'meals': meals, 'query': query})
+                       'meals': meals, 'query': query, 'sort_selected': sort})
 
 
 # Parse user query
