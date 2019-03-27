@@ -68,9 +68,14 @@ def home(request):
 
 
     # Search query has been performed
-    if 'query' in request.POST:
+    if 'query' in request.POST or 'q' in request.GET:
         if request.POST and request.POST['query']:
             query = request.POST['query']
+
+            parsed_query = query_parser(query)
+            recipes = retrieve_results(parsed_query)
+        elif request.GET and request.GET.get('q'):
+            query = request.GET.get('q')
 
             parsed_query = query_parser(query)
             recipes = retrieve_results(parsed_query)
@@ -153,6 +158,7 @@ def query_parser(query_string):
     return query
 
 
+# Standardize query ingredients
 def standardize(ingredients):
     recipe = []
     for flag,ing in ingredients:
@@ -212,10 +218,12 @@ def retrieve_results(filters):
     return Recipe.getRecipesMatchingIngredients(not_ingredients_ids,ingredients_ids)
 
 
+# Rank search results
 def rank_results(results):
     pass
 
 
+# Sort search results
 def sort_results(results, sort_option):
 
     if sort_option == 'Title':
@@ -233,6 +241,6 @@ def sort_results(results, sort_option):
     return results
 
 
-
+# Advanced filtering of search results
 def filter_results(results, filters):
     pass
