@@ -21,4 +21,12 @@ class Ingredient(models.Model):
 
     @classmethod
     def getIngredientsByNames(cls, names):
-        return Ingredient.objects.filter(name__in=names)
+        results = []
+        for name in names:
+            results.append(Ingredient.objects.filter(name__icontains=name))
+
+        if len(results):
+            final_results = results[0].intersection(*results[1:])
+            return final_results.values_list('pk', flat=True)
+        else:
+            return []

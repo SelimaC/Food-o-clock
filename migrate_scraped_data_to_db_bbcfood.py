@@ -1,34 +1,46 @@
+import re
 from inflection import singularize
 import unidecode
-import keyboard
-import re
 from textblob import TextBlob
-from nltk.corpus import stopwords
 
-ingredients_set = []
-stopWords = set(stopwords.words('english'))
-
-stop = ['cups','old','heart','skirt','new','style','leaf','leafe','heavy', 'striped','firm','whole','thumbsized','mediumsize','litre','liter','smallsize','largesize','light','bag','bags','tub','tubs','vegetable','sharp','ground','cup', 'oz', 'pound', 'pounds', 'lb', 'x', 'garnish', 'garnishes', 'teaspoon', 'teaspoons', 'tablespoon', 'optional','kg','gms','g','extra','warm','cold','lean','recipe','filling','*','precook','shredded','shred',
-        'quart','tablespoons', 'tsp', 'tbs','hard', 'medium', 'large', 'stick', 'package', 'container', 'dash', 'pinch', 'frozen','bunch', 'piece', 'pieces', 'skinless','boneless','bar','premium','supreme','fatfree','doublecut','peeled','cap','petite','clove','cloves','handful',
-        'grated','skirt','drop', 'drops','quartered', 'half', 'halved','ounces', 'ounce','halves','delicious','longgrain','t. ','splash','rotisserie','course','leaf','leaves','pinch','crispy','c.','coarse','jar','head','gr','fajitum', 'size','young','tip','partskim',
+"""
+stop = ['cups','nonfat','spicy','crushed','grated','food','cube','torn','big','small','pint','top','serve','thigh','shoulder','leg','breast','wing','fine','quality','gram','clove','box','nonstick','stick','non','link','use','brand','philadelphia','instant','ready','tasty','easy','link','bulk','huge',
+        'old','heart','skirt','new','style','leaf','leafe','heavy', 'striped','firm','whole','thumbsized','mediumsize','litre','liter','smallsize','largesize','light','bag','bags','tub','tubs','vegetable','sharp','ground','cup', 'oz', 'pound', 'pounds', 'lb', 'x', 'garnish', 'garnishes', 'teaspoon', 'teaspoons', 'tablespoon', 'optional','kg','gms','g','extra','warm','cold','lean','recipe','filling','*','precook','shredded','shred',
+        'quart','tablespoons', 'tsp', 'tbs','hard', 'medium', 'large', 'stick', 'package', 'section','block','fat-free','flat','cm','tb','season','tin','mexican','leftover','gm','part','skim','confectioner','squeeze','crunchy','raw','uncooked','ripe','choice','chef','professional','refrigerated',
+        'container', 'dash', 'pinch', 'frozen','bunch', 'piece', 'pieces', 'skinless','boneless','bar','premium','supreme','fatfree','doublecut','peeled','cap','petite','clove','cloves','handful','good','market','shop','fat','free','envelope','secret','quick','fast','store','round','shape','organic','pod','blanched',
+        'grated','skirt','drop', 'drops','quartered', 'half', 'halved','ounces', 'ounce','halves','delicious','longgrain','t','splash','rotisserie','course','leaf','leaves','pinch','crispy','coarse','jar','head','gr','fajitum', 'size','young','tip','partskim',
         'diameter','step','ml','boiling','tender','recipe', 'strip', 'strips', 'inch', 'cms', 'inches', 'fresh', 'dry', 'thick', 'thin', 'slice', 'slices', 'c','sprig', 'sprigs','l','ltr','deep','frying','stalk','homemade','scoop','favourite','baby','goodquality','topping',
         'jumbo', 'can','pkg','quarter','cloves','version','tbsp','additional', 'cans','tenders', 'small','plain', 'bottle', 'beating','bottles','glass', 'glasses', 'huge', 'chopped','boneless','bonein', 'bone-in', 'skin-on','chunk', 'chunks']
 
+stopss=[]
+
+stop=list(set(stop))
+
+for s in stop:
+    stopss.append(singularize(s))
+"""
+
+print("done")
 foodfile = open("basicfood.txt", "r")
 allow = foodfile.read().split('\n')
 foodfile.close()
+
+foodfiles = open("stopfoodwords.txt", "r")
+stopWords = foodfiles.read().split('\n')
+foodfiles.close()
 
 file = open("stopfoods10.txt", "r")
 stopfoods = file.read().split('\n')
 file.close()
 
+stopWords = set(stopWords)
+
 tags = ['JJ', 'JJS', 'JJR', 'NN', 'NNS', 'NNP', 'NNPS']
 for ss in stopfoods:
     stopWords.add(ss)
 
-for s in stop:
-    stopWords.add(s)
 
+ingredients_set = []
 migration = []
 
 # Standardize a list of ingredients
@@ -36,13 +48,12 @@ def standardize(ingredients):
     recipe = []
     for ing in ingredients:
         temp = ''
-        # print(ing)
-        # ing = '1 1/4 cups all-purpose flour (about 5 1/2 ounces)'
+
         ing = ing.lower()
         ing = unidecode.unidecode(ing)
 
         ing = ing.split(" or ")[0]
-        ing = re.sub(r" ?\([^)]+\)", " ", ing)
+        ing = re.sub(r"[\(\[].*?[\)\]]", " ", ing)
         ing = re.sub(r"([0-9]*-ounces)+", " ", ing)
         ing = re.sub(r"([0-9]*-ounce)+", " ", ing)
         ing = re.sub(r"([0-9]*-inches)+", " ", ing)
@@ -50,9 +61,10 @@ def standardize(ingredients):
         ing = re.sub(r"([0-9])+", " ", ing)
         ing = re.sub(r"(-)+", " ", ing)
         ing = re.sub(r"(/)+", " ", ing)
-        commasplit = re.split(r"\,", ing)
-        ing = commasplit[0]
+        ing = ing.split(",")[0]
         ing = ing.replace("*", " ")
+        ing = ing.replace("%", " ")
+
         ing = ing.replace("+", " ")
         ing = ing.replace("-", " ")
         ing = ing.replace(".", " ")
@@ -61,17 +73,16 @@ def standardize(ingredients):
         ing = ing.split("http")[0]
 
         wi = TextBlob(ing)
-
         tagbag = wi.tags
 
         for pos in tagbag:
             if (pos[1] in tags) or (singularize(pos[0]) in allow):
                 if singularize(pos[0]) not in stopWords:
-                    temp = temp + " " + singularize(pos[0])
-        temp = re.sub(r"^\s+", "", temp)
-        temp = re.sub(r"\s+$", "", temp)
 
-        if temp != "":
+                    temp = temp + " " + singularize(pos[0])
+        temp = temp.strip()
+
+        if temp:
             recipe.append(temp)
             ingredients_set.append(temp)
 
@@ -81,7 +92,6 @@ def standardize(ingredients):
 import sqlite3
 conn = sqlite3.connect('recipes-gokhan.db')
 c = conn.cursor()
-
 
 
 # Prepare the data for migration to website's database
@@ -170,7 +180,7 @@ if True:
 print(len(ingredients_set))
 ingredients_to_save = list(set(ingredients_set))
 print(len(ingredients_to_save))
-keyboard.wait("enter")
+
 for ingredient in ingredients_to_save:
     flag=True
     ids = c.execute('SELECT id FROM foodoclock_ingredient WHERE name = ?', (ingredient,))
