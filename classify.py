@@ -44,10 +44,10 @@ for i in range(len(train1)):
     for j in train1[i]['ingredients']:
         if j in ing:
             f[ing.index(j)] = 1
-    train.append(f)
+    #train.append(f)
     features.append(f)
     del f
-    trainlabel.append(cuisine.index(train1[i]['cuisine']))
+    #trainlabel.append(cuisine.index(train1[i]['cuisine']))
     label.append(cuisine.index(train1[i]['cuisine']))
 
 del train1
@@ -58,10 +58,10 @@ for i in range(len(train2)):
     for j in train2[i]['ingredients']:
         if j in ing:
             f[ing.index(j)] = 1
-    train.append(f)
+    #train.append(f)
     features.append(f)
     del f
-    trainlabel.append(cuisine.index(train2[i]['cuisine']))
+    #trainlabel.append(cuisine.index(train2[i]['cuisine']))
     label.append(cuisine.index(train2[i]['cuisine']))
 
 del train2
@@ -73,7 +73,7 @@ for i in range(len(test1)):
     for j in test1[i]['ingredients']:
         if j in ing:
             f[ing.index(j)] = 1
-    test.append(f)
+    #test.append(f)
     features.append(f)
     del f
     testlabel.append(cuisine.index(test1[i]['cuisine']))
@@ -91,7 +91,7 @@ for i in range(len(test2)):
     features.append(f)
     del f
     testlabel.append(cuisine.index(test2[i]['cuisine']))
-    label.append(cuisine.index(test2[i]['cuisine']))
+    #label.append(cuisine.index(test2[i]['cuisine']))
 
 del test2
 print("done")
