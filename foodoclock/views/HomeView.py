@@ -110,6 +110,8 @@ def home(request):
     for r in recipes:
         r.ingredients_display = eval(r.ingredients_list)
         r.rating_display = int(r.rating)
+        if len(r.meta_description.split()) > 50:
+            r.meta_description = ' '.join(r.meta_description.split()[0:50]) + ' ...'
     total = len(recipes)
 
     # Prepare paginator for search results
