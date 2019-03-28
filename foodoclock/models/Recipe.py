@@ -30,7 +30,7 @@ class Recipe(models.Model):
 
     @classmethod
     def getRecipeByTitle(cls, title):
-        return Recipe.objects.get(title=title)
+        return Recipe.objects.filter(title__icontains=title)
 
     @classmethod
     def getRecipeByLink(cls, link):
@@ -39,7 +39,6 @@ class Recipe(models.Model):
     @classmethod
     def getRecipesByCusine(cls, cuisine):
         return Recipe.objects.filter(cusine=cuisine)
-
 
     @classmethod
     def getRecipesByMealType(cls, meal):
@@ -56,6 +55,22 @@ class Recipe(models.Model):
     @classmethod
     def getRecipesMatchingIngredients(cls, not_ingredients, ingredients):
         return Recipe.objects.filter(ingredients__in=ingredients).exclude(ingredients__in=not_ingredients)
+    
+    @classmethod
+    def getRecipes(cls, passed):
+        print(passed)
+        result = Recipe.objects.filter(title__icontains=passed['title'])
+        if passed['ingredients']:
+            result = result.filter(ingredients__in=passed['ingredients'])
+        if passed['not_ingredients']:
+            result = result.exclude(ingredients__in=passed['not_ingredients'])
+        if 'cuisine' in passed:
+            result = result.filter(cuisine=passed['cuisine'])
+        if 'meal' in passed:
+            result = result.filter(meal=passed['meal'])
+        if 'diet' in passed:
+            result = result.filter(diet=passed['diet'])
+        return result
 
     def __str__(self):
         return "Title: " + str(self.title)

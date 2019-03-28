@@ -40,13 +40,13 @@ foodfile = open("basicfood.txt", "r")
 allow = foodfile.read().split('\n')
 foodfile.close()
 
-foodfiles = open("stopfoodwords.txt", "r")
-stopWords = foodfiles.read().split('\n')
-foodfiles.close()
+with open("stopfoodwords.txt", "r", encoding='utf-8', errors='ignore') as foodfiles:
+    stopWords = foodfiles.read().split('\n')
+    foodfiles.close()
 
-file = open("stopfoods10.txt", "r")
-stopfoods = file.read().split('\n')
-file.close()
+with open("stopfoods10.txt", "r", encoding='utf-8',errors='ignore') as file:
+    stopfoods = file.read().split('\n')
+    file.close()
 
 stopWords = set(stopWords)
 
@@ -137,10 +137,10 @@ def query_parser(query_string):
     query = {}
     query['ingredients'] = []
     query['title'] = ""
-    query['diet'] = []
-    query['cuisine'] = ""
-    query['meal_type'] = ""
-    query['sort'] = ""
+    #query['diet'] = ""
+    #query['cuisine'] = ""
+    #query['meal'] = ""
+    #query['sort'] = ""
 
     parts = query_string.split(' ')
     title = []
@@ -156,9 +156,7 @@ def query_parser(query_string):
             title.append(p)
     query['ingredients'] = standardize(ingredients)
     query['title'] = ' '.join(title)
-
     return query
-
 
 # Standardize query ingredients
 def standardize(ingredients):
@@ -217,8 +215,10 @@ def retrieve_results(filters):
             not_ingredients.append(i[1])
     ingredients_ids = Ingredient.getIngredientsByNames(ingredients)
     not_ingredients_ids = Ingredient.getIngredientsByNames(not_ingredients)
-    return Recipe.getRecipesMatchingIngredients(not_ingredients_ids,ingredients_ids)
-
+    passed = filters
+    passed['ingredients'] = ingredients_ids
+    passed['not_ingredients'] = not_ingredients_ids
+    return Recipe.getRecipes(passed)
 
 # Rank search results
 def rank_results(results):
