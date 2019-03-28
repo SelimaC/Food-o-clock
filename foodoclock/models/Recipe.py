@@ -58,18 +58,22 @@ class Recipe(models.Model):
     
     @classmethod
     def getRecipes(cls, passed):
+        print('-----------')
         print(passed)
-        result = Recipe.objects.filter(title__icontains=passed['title'])
+        result = Recipe.objects.all()
+        if passed['title']:
+            result = Recipe.objects.filter(title__icontains=passed['title'])
         if passed['ingredients']:
             result = result.filter(ingredients__in=passed['ingredients'])
         if passed['not_ingredients']:
             result = result.exclude(ingredients__in=passed['not_ingredients'])
         if 'cuisine' in passed:
-            result = result.filter(cuisine=passed['cuisine'])
+            print(passed['cuisine'])
+            result = result.filter(cuisine__in=Cuisine.getCuisineByNames(passed['cuisine']))
         if 'meal' in passed:
-            result = result.filter(meal=passed['meal'])
+            result = result.filter(meal_type__in=MealType.getMealTypes(passed['meal']))
         if 'diet' in passed:
-            result = result.filter(diet=passed['diet'])
+            result = result.filter(diet__in=Diet.getDiets(passed['diet']))
         return result
 
     def __str__(self):

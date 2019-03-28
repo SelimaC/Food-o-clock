@@ -4,6 +4,7 @@ from django.core.paginator import Paginator
 from foodoclock.models.Recipe import Recipe
 from foodoclock.models.MealType import MealType
 from foodoclock.models.Cuisine import Cuisine
+from foodoclock.models.Diet import Diet
 from foodoclock.models.UserDetails import UserDetails
 from django.http import JsonResponse
 from foodoclock.models.Ingredient import Ingredient
@@ -64,30 +65,31 @@ def home(request):
     # Data to populate advanced filters
     cuisines = Cuisine.objects.all()
     meals = MealType.objects.all()
+    diets = Diet.objects.all()
     sort_options = [('Sort by', True), ('Title', False), ('Time',False), ('Rating', False)]
 
+    # Filtering
+    print(request.POST)
+    filter = {}
+    if 'cuisine' in request.POST:
+        filter['cuisine'] = request.POST.getlist('cuisine')
+    if 'meal' in request.POST:
+        filter['meal'] = request.POST.getlist('meal')
+    if 'diet' in request.POST:
+        filter['diet'] = request.POST.getlist('diet')
 
     # Search query has been performed
+    query = ""
+    # Get all recipes
+    recipes = Recipe.objects.all().order_by('?')
     if 'query' in request.POST or 'q' in request.GET:
         if request.POST and request.POST['query']:
             query = request.POST['query']
-
-            parsed_query = query_parser(query)
-            recipes = retrieve_results(parsed_query)
         elif request.GET and request.GET.get('q'):
             query = request.GET.get('q')
-
-            parsed_query = query_parser(query)
-            recipes = retrieve_results(parsed_query)
-        else:
-            query = ""
-            # Get all recipes
-            recipes = Recipe.objects.all().order_by('?')
-    else:
-        query = ""
-        # Get all recipes
-        recipes = Recipe.objects.all().order_by('?')
-
+             
+    parsed_query = query_parser(query)
+    recipes = retrieve_results(parsed_query, filter)
 
     sort = request.POST.get('sort', None)
     if 's' in request.GET:
@@ -103,15 +105,6 @@ def home(request):
         if sort == 'Time':
             sort_options = [('Sort by', False), ('Title', False), ('Time', True), ('Rating', False)]
 
-    filter_cuisine = request.POST.get('cuisine', None)
-    if filter_cuisine is not None:
-        pass
-    filter_meal = request.POST.get('meal', None)
-    if filter_meal is not None:
-        pass
-    filter_difficulty = request.POST.get('difficulty', None)
-    if filter_difficulty is not None:
-        pass
 
     # Prepare some data to be displayed in search results
     for r in recipes:
@@ -129,19 +122,15 @@ def home(request):
     # Render results
     return render(request, '../templates/home.html',
                       {'page': 1, 'rows': rows, 'total': total, 'sort': sort_options, 'cuisine': cuisines,
-                       'meals': meals, 'query': query, 'sort_selected': sort})
-
+                       'meals': meals, 'diets': diets, 'query': query, 'sort_selected': sort})
 
 # Parse user query
 def query_parser(query_string):
     query = {}
     query['ingredients'] = []
     query['title'] = ""
-    #query['diet'] = ""
-    #query['cuisine'] = ""
-    #query['meal'] = ""
-    #query['sort'] = ""
-
+    if query_string == '':
+        return query
     parts = query_string.split(' ')
     title = []
     ingredients = []
@@ -155,7 +144,8 @@ def query_parser(query_string):
         else:
             title.append(p)
     query['ingredients'] = standardize(ingredients)
-    query['title'] = ' '.join(title)
+    if len(title) != 0:
+        query['title'] = ' '.join(title)
     return query
 
 # Standardize query ingredients
@@ -203,21 +193,23 @@ def standardize(ingredients):
 
     return recipe
 
-
 # Retrieve results
-def retrieve_results(filters):
+def retrieve_results(query, filters):
     ingredients = []
     not_ingredients = []
-    for i in filters['ingredients']:
+    for i in query['ingredients']:
         if i[0]:
             ingredients.append(i[1])
         else:
             not_ingredients.append(i[1])
     ingredients_ids = Ingredient.getIngredientsByNames(ingredients)
     not_ingredients_ids = Ingredient.getIngredientsByNames(not_ingredients)
-    passed = filters
+    passed = query
     passed['ingredients'] = ingredients_ids
     passed['not_ingredients'] = not_ingredients_ids
+    if len(filters) != 0:
+        for k,v in filters.items():
+            passed[k] = v
     return Recipe.getRecipes(passed)
 
 # Rank search results

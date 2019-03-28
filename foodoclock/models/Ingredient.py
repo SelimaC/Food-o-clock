@@ -24,7 +24,6 @@ class Ingredient(models.Model):
         results = []
         for name in names:
             results.append(Ingredient.objects.filter(name__icontains=name))
-
         if len(results):
             final_results = results[0].intersection(*results[1:])
             return final_results.values_list('pk', flat=True)

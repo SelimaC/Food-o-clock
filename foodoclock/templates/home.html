@@ -317,19 +317,14 @@
                 {% endfor%}
             </div>
 
-            <div id="difficulties" class="left">
-                <h5>Difficulty</h5>
-                <label class="container">Beginners
-                  <input type="checkbox" name="difficulty">
-                  <span class="checkmark"></span>
-                </label>
-                <label class="container">Intermediate
-                  <input type="checkbox" name="difficulty">
-                  <span class="checkmark"></span>
-                </label><label class="container">Advanced
-                  <input type="checkbox" name="difficulty">
-                  <span class="checkmark"></span>
-                </label>
+            <div id="diets" class="left">
+                <h5>Diet</h5>
+                {% for d in diets %}
+                    <label class="container">{{d.diet}}
+                        <input type="checkbox" name="diet" value="{{d.diet}}">
+                        <span class="checkmark"></span>
+                    </label>
+                {% endfor%}
             </div>
         </div>
 
