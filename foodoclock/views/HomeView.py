@@ -18,6 +18,7 @@ import re
 from inflection import singularize
 import unidecode
 from textblob import TextBlob
+from operator import itemgetter, attrgetter
 
 """
 stop = ['cups','nonfat','spicy','crushed','grated','food','cube','torn','big','small','pint','top','serve','thigh','shoulder','leg','breast','wing','fine','quality','gram','clove','box','nonstick','stick','non','link','use','brand','philadelphia','instant','ready','tasty','easy','link','bulk','huge',
@@ -81,15 +82,17 @@ def home(request):
     # Search query has been performed
     query = ""
     # Get all recipes
-    recipes = Recipe.objects.all().order_by('?')
+
     if 'query' in request.POST or 'q' in request.GET:
         if request.POST and request.POST['query']:
             query = request.POST['query']
         elif request.GET and request.GET.get('q'):
             query = request.GET.get('q')
              
-    parsed_query = query_parser(query)
-    recipes = retrieve_results(parsed_query, filter)
+        parsed_query = query_parser(query)
+        recipes = retrieve_results(parsed_query, filter)
+    else:
+        recipes = Recipe.objects.all().order_by('?')
 
     sort = request.POST.get('sort', None)
     if 's' in request.GET:
@@ -114,6 +117,8 @@ def home(request):
             r.meta_description = ' '.join(r.meta_description.split()[0:50]) + ' ...'
     total = len(recipes)
 
+    # Rank results
+    recipes = rank_results(recipes, user_data)
     # Prepare paginator for search results
     paginator = Paginator(recipes, 10)  # Show 10 contacts per page
     page = request.GET.get('page')
@@ -213,8 +218,31 @@ def retrieve_results(query, filters):
     return Recipe.getRecipes(passed)
 
 # Rank search results
-def rank_results(results):
-    pass
+def rank_results(recipes, user_details):
+
+    if user_details.diet:
+        for r in recipes:
+            if r.diet == user_details.diet:
+                r.rank_score = 10
+            else:
+                r.rank_score = 0
+
+
+    if user_details.cuisine:
+        for r in recipes:
+            if r.cuisine == user_details.cuisine:
+                r.rank_score += 10
+            else:
+                r.rank_score +=0
+
+    for r in recipes:
+        r.rank_score += r.rating
+        r.rank_score += r.click
+
+
+    recipes = sorted(recipes, key=attrgetter('rank_score'), reverse=True)
+
+    return recipes
 
 
 # Sort search results
