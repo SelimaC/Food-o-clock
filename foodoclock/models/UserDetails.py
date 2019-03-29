@@ -17,6 +17,8 @@ class UserDetails(models.Model):
     country = models.CharField(max_length=50)
     age = models.IntegerField()
     user = models.OneToOneField(User, unique=True, on_delete=models.PROTECT)
+    visits = models.IntegerField(default=0)
+    clicks = models.IntegerField(default=0)
 
     @classmethod
     def make_random_code(cls, username, length=8):

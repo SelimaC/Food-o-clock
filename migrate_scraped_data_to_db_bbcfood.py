@@ -2,7 +2,9 @@ import re
 from inflection import singularize
 import unidecode
 from textblob import TextBlob
-
+from nltk import word_tokenize, pos_tag
+from nltk.corpus import wordnet as wn
+import random
 """
 stop = ['cups','nonfat','spicy','crushed','grated','food','cube','torn','big','small','pint','top','serve','thigh','shoulder','leg','breast','wing','fine','quality','gram','clove','box','nonstick','stick','non','link','use','brand','philadelphia','instant','ready','tasty','easy','link','bulk','huge',
         'old','heart','skirt','new','style','leaf','leafe','heavy', 'striped','firm','whole','thumbsized','mediumsize','litre','liter','smallsize','largesize','light','bag','bags','tub','tubs','vegetable','sharp','ground','cup', 'oz', 'pound', 'pounds', 'lb', 'x', 'garnish', 'garnishes', 'teaspoon', 'teaspoons', 'tablespoon', 'optional','kg','gms','g','extra','warm','cold','lean','recipe','filling','*','precook','shredded','shred',
@@ -19,6 +21,29 @@ stop=list(set(stop))
 for s in stop:
     stopss.append(singularize(s))
 """
+def simpletag(tag):
+
+    if tag.startswith('N'):
+        return 'n'
+    if tag.startswith('V'):
+        return 'v'
+
+    if tag.startswith('J'):
+        return 'a'
+
+    if tag.startswith('R'):
+        return 'r'
+
+    return None
+
+def getsynset(word, tag):
+    tag = simpletag(tag)
+    if tag is None:
+        return None
+    try:
+        return wn.synsets(word, tag)[0]
+    except:
+        return None
 
 print("done")
 foodfile = open("basicfood.txt", "r")
@@ -42,6 +67,7 @@ for ss in stopfoods:
 
 ingredients_set = []
 migration = []
+token_set =[]
 
 # Standardize a list of ingredients
 def standardize(ingredients):
@@ -143,6 +169,14 @@ for row in c.execute('SELECT * FROM recipes'):
                 if 'Healthy' in row[4]:
                     recipe['diet'] = 'Healthy Recipes'
 
+        recipe['tokens'] = []
+        tokens = pos_tag(word_tokenize(recipe['title']))
+        for t in tokens:
+            if t[0] != "":
+                if t[1].startswith('N') or t[1].startswith('V') or t[1].startswith('J') or t[1].startswith('R'):
+                    recipe['tokens'].append(singularize(t[0].lower()))
+                    token_set.append(singularize(t[0].lower()))
+
         flag = True
         for m in migration:
             if m['title'] == recipe['title'] or m['link'] == recipe['link']:
@@ -177,6 +211,7 @@ if True:
             print('sqlite error: ', e.args[0])  # column name is not unique
         conn.commit()
 
+print("Saving ingredients")
 print(len(ingredients_set))
 ingredients_to_save = list(set(ingredients_set))
 print(len(ingredients_to_save))
@@ -195,7 +230,27 @@ for ingredient in ingredients_to_save:
         except sqlite3.IntegrityError as e:
             print('sqlite error: ', e.args[0])  # column name is not unique
         conn.commit()
-#keyboard.wait("enter")
+
+print("Saving tokens")
+print(len(token_set))
+token_to_save = set(token_set)
+print(len(token_to_save))
+for token in token_to_save:
+    flag=True
+    ids = c.execute('SELECT id FROM foodoclock_titletoken WHERE token = ?', (token,))
+
+    if c.fetchone()!=None:
+        flag=False
+
+    if flag:
+        try:
+            sql = '''INSERT INTO foodoclock_titletoken (token) VALUES (?)'''
+            c.execute(sql, (token,))
+        except sqlite3.IntegrityError as e:
+            print('sqlite error: ', e.args[0])  # column name is not unique
+        conn.commit()
+
+
 # Recover ids
 cuisine_ids = {}
 for cuisine in cuisines:
@@ -237,7 +292,7 @@ if True:
         try:
             sql = '''INSERT INTO foodoclock_recipe (title,link,corpus,meta_description,preparation_time,cuisine_id,diet_id,meal_type_id,click,image_url,cook_time,rating, ingredients_list) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)'''
             c.execute(sql, (r['title'], r['link'], r['corpus'], r['meta_description'], r['preparation_time'],
-                cuisine, diet, meal, 0, r['image_url'], r['cook_time'], r['rating'], r['ingredients_list']))
+                cuisine, diet, meal, random.randint(1,20001), r['image_url'], r['cook_time'], r['rating'], r['ingredients_list']))
         except sqlite3.IntegrityError as e:
             print('sqlite error: ', e.args[0])  # column name is not unique
         conn.commit()
@@ -265,7 +320,27 @@ if True:
             conn.commit()
         #keyboard.wait("enter")
 
-
+# Tokens binding
+if True:
+    for r in migration:
+        print(r['title'])
+        for i in r['tokens']:
+            print(i)
+            recipe_ids = c.execute('SELECT auto_increment_id FROM foodoclock_recipe WHERE title = ? AND link=?' , (r['title'], r['link'],))
+            for id in recipe_ids:
+                r_id=id
+            token_ids = c.execute('SELECT id FROM foodoclock_titletoken WHERE token =?' , (i,))
+            for id in token_ids:
+                t_id=id
+            print(r_id)
+            print(t_id)
+            try:
+                sql = '''INSERT INTO foodoclock_recipe_title_tokens (recipe_id, titletoken_id) VALUES(?,?)'''
+                c.execute(sql, ( r_id[0],t_id[0],))
+            except sqlite3.IntegrityError as e:
+                print('sqlite error: ', e.args[0])  # column name is not unique
+            conn.commit()
+        #keyboard.wait("enter")
 
 
 conn.close()

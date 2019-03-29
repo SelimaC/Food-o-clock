@@ -273,6 +273,7 @@ def simpletag(tag):
 
     return None
 
+
 def getsynset(word, tag):
     tag = simpletag(tag)
     if tag is None:
@@ -283,6 +284,7 @@ def getsynset(word, tag):
         return None
 
 
+# Compute string similarity
 def title_similarity(phrase1, phrase2):
 
     phrase1 = pos_tag(word_tokenize(phrase1))
@@ -313,3 +315,4 @@ def title_similarity(phrase1, phrase2):
         # Average the values
     score /= count
     return score
+

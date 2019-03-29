@@ -3,7 +3,8 @@ from foodoclock.models.Ingredient import Ingredient
 from foodoclock.models.MealType import MealType
 from foodoclock.models.Diet import Diet
 from foodoclock.models.Cuisine import Cuisine
-from django.db.models import Q
+from foodoclock.models.TitleToken import TitleToken
+
 
 class Recipe(models.Model):
     auto_increment_id = models.AutoField(primary_key=True)
@@ -23,6 +24,8 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(Ingredient, blank=True)
     ingredients_list = models.CharField(max_length=10000, blank=True)
     click=models.IntegerField(default=0)
+
+    title_tokens = models.ManyToManyField(TitleToken, blank=True)
 
     @classmethod
     def getRecipeById(cls, id):
