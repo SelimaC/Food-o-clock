@@ -6,19 +6,14 @@ from foodoclock.models.MealType import MealType
 from foodoclock.models.Cuisine import Cuisine
 from foodoclock.models.Diet import Diet
 from foodoclock.models.UserDetails import UserDetails
-from django.http import JsonResponse
+from nltk import word_tokenize, pos_tag
+from nltk.corpus import wordnet as wn
 from foodoclock.models.Ingredient import Ingredient
-from inflection import singularize
-import unidecode
-from django.core import serializers
-import re
-from textblob import TextBlob
-from nltk.corpus import stopwords
 import re
 from inflection import singularize
 import unidecode
 from textblob import TextBlob
-from operator import itemgetter, attrgetter
+from operator import attrgetter
 
 """
 stop = ['cups','nonfat','spicy','crushed','grated','food','cube','torn','big','small','pint','top','serve','thigh','shoulder','leg','breast','wing','fine','quality','gram','clove','box','nonstick','stick','non','link','use','brand','philadelphia','instant','ready','tasty','easy','link','bulk','huge',
@@ -263,6 +258,58 @@ def sort_results(results, sort_option):
     return results
 
 
-# Advanced filtering of search results
-def filter_results(results, filters):
-    pass
+def simpletag(tag):
+
+    if tag.startswith('N'):
+        return 'n'
+    if tag.startswith('V'):
+        return 'v'
+
+    if tag.startswith('J'):
+        return 'a'
+
+    if tag.startswith('R'):
+        return 'r'
+
+    return None
+
+def getsynset(word, tag):
+    tag = simpletag(tag)
+    if tag is None:
+        return None
+    try:
+        return wn.synsets(word, tag)[0]
+    except:
+        return None
+
+
+def title_similarity(phrase1, phrase2):
+
+    phrase1 = pos_tag(word_tokenize(phrase1))
+    phrase2 = pos_tag(word_tokenize(phrase2))
+    synset1 = []
+    synset2 = []
+    for word in phrase1:
+        syn = getsynset(*word)
+        if syn:
+            synset1.append(getsynset(*word))
+    for word in phrase2:
+        syn = getsynset(*word)
+        if syn:
+            synset2.append(getsynset(*word))
+
+    score, count = 0.0, 0
+
+    for synset in synset1:
+        sym = [synset.path_similarity(ss) for ss in synset2]
+        sym = [x for x in sym if x is not None]
+        if len(sym) > 0:
+            best_score = max([x for x in sym if x is not None])
+
+            if best_score is not None:
+                score = score + best_score
+                count += 1
+
+        # Average the values
+    score /= count
+    return score

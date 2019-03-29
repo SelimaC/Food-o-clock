@@ -44,11 +44,14 @@ def title_similarity(phrase1, phrase2):
     score, count = 0.0, 0
 
     for synset in synset1:
-        best_score = max([synset.path_similarity(ss) for ss in synset2])
+        sym = [synset.path_similarity(ss) for ss in synset2]
+        sym = [x for x in sym if x is not None]
+        if len(sym) > 0:
+            best_score = max([x for x in sym if x is not None])
 
-        if best_score is not None:
-            score += best_score
-            count += 1
+            if best_score is not None:
+                score = score + best_score
+                count += 1
 
         # Average the values
     score /= count
@@ -66,6 +69,7 @@ for title in titles:
     sim2 = title_similarity(query, title)
     scores.append(float((sim1+sim2) / 2))
 
+print(scores)
 
 
 
