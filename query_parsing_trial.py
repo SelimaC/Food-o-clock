@@ -3,7 +3,9 @@ import unidecode
 import re
 from textblob import TextBlob
 from nltk.corpus import stopwords
-
+from nltk import word_tokenize, pos_tag
+from nltk.corpus import wordnet as wn
+import random
 
 stopWords = set(stopwords.words('english'))
 
@@ -84,9 +86,21 @@ def query_parser(query_string):
     first_minus = query_string.find("-")
     end_title = min(first_minus, first_plus)
 
-    query["title"] = query_string[0:end_title - 1]
 
-    if min == -1:
+
+    if end_title == -1:
+        query["title"] = query_string
+    elif end_title != 0 :
+        query["title"] = query_string[0:end_title-1]
+
+    query['tokens'] = []
+    tokens = pos_tag(word_tokenize(query['title']))
+    for t in tokens:
+        if t[0] != "":
+            if t[1].startswith('N') or t[1].startswith('V') or t[1].startswith('J') or t[1].startswith('R'):
+                query['tokens'].append(singularize(t[0].lower()))
+
+    if end_title == -1:
         return query
 
     parts_plus = re.findall(r'\+[a-zA-Z ]*', query_string[end_title:])
@@ -102,8 +116,8 @@ def query_parser(query_string):
         ingredients.append((False, i[1]))
     query['ingredients'] = standardize(ingredients)
 
+
     return query
 
-query='Potato salad +salmon raw -roast potato -caramel onion +cacca'
+query='Potato salad +salmon raw -onion caramel'
 print(query_parser(query))
-print(re.findall(r'\+[a-zA-Z ]*', query))
