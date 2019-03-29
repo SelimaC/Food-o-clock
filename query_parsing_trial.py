@@ -73,23 +73,37 @@ def standardize(ingredients):
 
     return recipe
 
-query='Potato salad +salmon -onions'
-parts = query.split(' ')
-ingredients = []
-title = []
-for p in parts:
-    if '+' in p:
-        i = p.split('+')
-        ingredients.append((True, i[1]))
-    elif '-' in p:
-        i = p.split('-')
-        ingredients.append((False, i[1]))
-    else:
-        title.append(p)
-for i in ingredients:
-    print(str(i[0]) +  " " + str(i[1]))
-ingredients=standardize(ingredients)
-for i in ingredients:
-    print(str(i[0]) +  " " + str(i[1]))
+def query_parser(query_string):
+    query = {}
+    query['ingredients'] = []
+    query['title'] = ""
+    if query_string == '':
+        return query
 
-print(' '.join(title))
+    first_plus = query_string.find("+")
+    first_minus = query_string.find("-")
+    end_title = min(first_minus, first_plus)
+
+    query["title"] = query_string[0:end_title - 1]
+
+    if min == -1:
+        return query
+
+    parts = query_string[end_title:].split(' ')
+    ingredients = []
+    for p in parts:
+        if '+' in p:
+            i = p.split('+')
+            ingredients.append((True, i[1]))
+        elif '-' in p:
+            i = p.split('-')
+            ingredients.append((False, i[1]))
+        else:
+            continue
+
+    query['ingredients'] = standardize(ingredients)
+
+    return query
+
+query='Potato salad +salmon -onions'
+print(query_parser(query))

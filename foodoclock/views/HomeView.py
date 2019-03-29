@@ -131,8 +131,17 @@ def query_parser(query_string):
     query['title'] = ""
     if query_string == '':
         return query
-    parts = query_string.split(' ')
-    title = []
+
+    first_plus = query_string.find("+")
+    first_minus = query_string.find("-")
+    end_title = min(first_minus, first_plus)
+
+    query["title"] = query_string[0:end_title - 1]
+
+    if min == -1:
+        return query
+
+    parts = query_string[end_title:].split(' ')
     ingredients = []
     for p in parts:
         if '+' in p:
@@ -142,10 +151,10 @@ def query_parser(query_string):
             i = p.split('-')
             ingredients.append((False, i[1]))
         else:
-            title.append(p)
+            continue
+
     query['ingredients'] = standardize(ingredients)
-    if len(title) != 0:
-        query['title'] = ' '.join(title)
+
     return query
 
 # Standardize query ingredients
