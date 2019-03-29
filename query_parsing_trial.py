@@ -119,5 +119,5 @@ def query_parser(query_string):
 
     return query
 
-query='Potato salad +salmon raw -onion caramel'
+query=''
 print(query_parser(query))

@@ -22,6 +22,7 @@ def getsynset(word, tag):
     if tag is None:
         return None
     try:
+        print( wn.synsets(word, tag))
         return wn.synsets(word, tag)[0]
     except:
         return None
@@ -31,7 +32,7 @@ def title_similarity(phrase1, phrase2):
 
     phrase1 = pos_tag(word_tokenize(phrase1))
     phrase2 = pos_tag(word_tokenize(phrase2))
-    print(phrase1)
+
     synset1 = []
     synset2 = []
 
@@ -44,7 +45,7 @@ def title_similarity(phrase1, phrase2):
         syn = getsynset(*word)
         if syn:
             synset2.append(getsynset(*word))
-    print(synset1)
+
     score, count = 0.0, 0
 
     for synset in synset1:

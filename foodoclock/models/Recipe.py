@@ -64,8 +64,8 @@ class Recipe(models.Model):
         print('-----------')
         print(passed)
         result = Recipe.objects.all()
-        if passed['title']:
-            result = Recipe.objects.filter(title__icontains=passed['title'])
+        if passed['token_ids']:
+            result = Recipe.objects.filter(title_tokens__in=passed['token_ids'])
         if passed['ingredients']:
             result = result.filter(ingredients__in=passed['ingredients'])
         if passed['not_ingredients']:

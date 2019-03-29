@@ -9,6 +9,7 @@ from foodoclock.models.UserDetails import UserDetails
 from nltk import word_tokenize, pos_tag
 from nltk.corpus import wordnet as wn
 from foodoclock.models.Ingredient import Ingredient
+from foodoclock.models.TitleToken import TitleToken
 import re
 from inflection import singularize
 import unidecode
@@ -32,7 +33,6 @@ for s in stop:
     stopss.append(singularize(s))
 """
 
-print("done")
 foodfile = open("basicfood.txt", "r")
 allow = foodfile.read().split('\n')
 foodfile.close()
@@ -76,7 +76,9 @@ def home(request):
 
     # Search query has been performed
     query = ""
+
     # Get all recipes
+    recipes = Recipe.objects.all().order_by('?')
 
     if 'query' in request.POST or 'q' in request.GET:
         if request.POST and request.POST['query']:
@@ -84,10 +86,8 @@ def home(request):
         elif request.GET and request.GET.get('q'):
             query = request.GET.get('q')
              
-        parsed_query = query_parser(query)
-        recipes = retrieve_results(parsed_query, filter)
-    else:
-        recipes = Recipe.objects.all().order_by('?')
+    parsed_query = query_parser(query)
+    recipes = retrieve_results(parsed_query, filter)
 
     sort = request.POST.get('sort', None)
     if 's' in request.GET:
@@ -102,7 +102,6 @@ def home(request):
             sort_options = [('Sort by', False), ('Title', False), ('Time', False), ('Rating', True)]
         if sort == 'Time':
             sort_options = [('Sort by', False), ('Title', False), ('Time', True), ('Rating', False)]
-
 
     # Prepare some data to be displayed in search results
     for r in recipes:
@@ -124,10 +123,12 @@ def home(request):
                       {'page': 1, 'rows': rows, 'total': total, 'sort': sort_options, 'cuisine': cuisines,
                        'meals': meals, 'diets': diets, 'query': query, 'sort_selected': sort})
 
+# Parse user query
 def query_parser(query_string):
     query = {}
     query['ingredients'] = []
     query['title'] = ""
+    query['title_tokens'] = []
     if query_string == '':
         return query
 
@@ -140,7 +141,6 @@ def query_parser(query_string):
     elif end_title != 0 :
         query["title"] = query_string[0:end_title-1]
 
-    query['title_tokens'] = []
     tokens = pos_tag(word_tokenize(query['title']))
     for t in tokens:
         if t[0] != "":
@@ -214,6 +214,7 @@ def standardize(ingredients):
 def retrieve_results(query, filters):
     ingredients = []
     not_ingredients = []
+    print(query)
     for i in query['ingredients']:
         if i[0]:
             ingredients.append(i[1])
@@ -224,6 +225,9 @@ def retrieve_results(query, filters):
     passed = query
     passed['ingredients'] = ingredients_ids
     passed['not_ingredients'] = not_ingredients_ids
+
+    token_ids = TitleToken.getTokensByNames(query['title_tokens'])
+    passed['token_ids'] = token_ids
     if len(filters) != 0:
         for k,v in filters.items():
             passed[k] = v

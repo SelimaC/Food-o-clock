@@ -18,3 +18,14 @@ class TitleToken(models.Model):
     @classmethod
     def getAllTokens(cls):
         return TitleToken.objects.all()
+
+    @classmethod
+    def getTokensByNames(cls, names):
+        results = []
+        for name in names:
+            results.append(TitleToken.objects.filter(token__icontains=name))
+        if len(results):
+            final_results = results[0].intersection(*results[1:])
+            return final_results.values_list('pk', flat=True)
+        else:
+            return []
