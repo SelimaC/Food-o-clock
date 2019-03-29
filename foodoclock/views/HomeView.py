@@ -141,17 +141,16 @@ def query_parser(query_string):
     if min == -1:
         return query
 
-    parts = query_string[end_title:].split(' ')
+    parts_plus = re.findall(r'\+[a-zA-Z ]*',  query_string[end_title:])
+    parts_minus = re.findall(r'\-[a-zA-Z ]*', query_string[end_title:])
     ingredients = []
-    for p in parts:
-        if '+' in p:
-            i = p.split('+')
-            ingredients.append((True, i[1]))
-        elif '-' in p:
-            i = p.split('-')
-            ingredients.append((False, i[1]))
-        else:
-            continue
+    for p in parts_plus:
+        i = p.split('+')
+        ingredients.append((True, i[1]))
+    for p in parts_minus:
+        i = p.split('-')
+        ingredients.append((False, i[1]))
+
 
     query['ingredients'] = standardize(ingredients)
 
