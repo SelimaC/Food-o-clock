@@ -116,8 +116,9 @@ def query_parser(query_string):
         ingredients.append((False, i[1]))
     query['ingredients'] = standardize(ingredients)
 
-
     return query
 
 query=''
 print(query_parser(query))
+
+print(0.5**(1/2))

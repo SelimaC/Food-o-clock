@@ -65,7 +65,6 @@ def home(request):
     sort_options = [('Sort by', True), ('Title', False), ('Time',False), ('Rating', False)]
 
     # Filtering
-    print(request.POST)
     filter = {}
     if 'cuisine' in request.POST:
         filter['cuisine'] = request.POST.getlist('cuisine')
@@ -112,7 +111,7 @@ def home(request):
     total = len(recipes)
 
     # Rank results
-    recipes = rank_results(recipes, user_data)
+    recipes = rank_results(recipes, user_data, parsed_query)
     # Prepare paginator for search results
     paginator = Paginator(recipes, 10)  # Show 10 contacts per page
     page = request.GET.get('page')
@@ -214,7 +213,7 @@ def standardize(ingredients):
 def retrieve_results(query, filters):
     ingredients = []
     not_ingredients = []
-    print(query)
+
     for i in query['ingredients']:
         if i[0]:
             ingredients.append(i[1])
@@ -234,27 +233,43 @@ def retrieve_results(query, filters):
     return Recipe.getRecipes(passed)
 
 # Rank search results
-def rank_results(recipes, user_details):
+def rank_results(recipes, user_details, query):
 
     if user_details.diet:
         for r in recipes:
             if r.diet == user_details.diet:
-                r.rank_score = 10
+                r.content_score = 10
             else:
-                r.rank_score = 0
+                r.content_score = 0
 
 
     if user_details.cuisine:
         for r in recipes:
             if r.cuisine == user_details.cuisine:
-                r.rank_score += 10
+                r.content_score += 10
             else:
-                r.rank_score +=0
+                r.content_score +=0
+
+    tot_click = 0
+    max_content_score = 0
 
     for r in recipes:
-        r.rank_score += r.rating
-        r.rank_score += r.click
+        if query['title'] != "":
+            sim1 = title_similarity(r.title, query['title'])
+            sim2 = title_similarity(query['title'], r.title)
+            r.similarity_score = float((sim1 + sim2)/2)
+        else:
+            r.similarity_score = 0
+        r.content_score += r.similarity_score + r.rating
+        tot_click += r.click
+        if r.content_score > max_content_score:
+            max_content_score = r.content_score
 
+    for r in recipes:
+        if max_content_score> 0:
+            r.content_score /= max_content_score
+        r.feedback_score = r.click / tot_click
+        r.rank_score = r.content_score**(1/2) * r.feedback_score
 
     recipes = sorted(recipes, key=attrgetter('rank_score'), reverse=True)
 
@@ -334,6 +349,9 @@ def title_similarity(phrase1, phrase2):
                 count += 1
 
         # Average the values
-    score /= count
+    if count > 0:
+        score /= count
+    else:
+        score = 0
     return score
 
