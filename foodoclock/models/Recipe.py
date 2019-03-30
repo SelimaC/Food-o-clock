@@ -68,6 +68,8 @@ class Recipe(models.Model):
             result = Recipe.objects.filter(title_tokens__in=passed['token_ids'])
         if passed['ingredients']:
             result = result.filter(ingredients__in=passed['ingredients'])
+            print("ingre")
+            print(result)
         if passed['not_ingredients']:
             result = result.exclude(ingredients__in=passed['not_ingredients'])
         if 'cuisine' in passed:

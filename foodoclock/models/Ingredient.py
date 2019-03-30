@@ -22,6 +22,9 @@ class Ingredient(models.Model):
     @classmethod
     def getIngredientsByNames(cls, names):
         results = []
+        print("retrieving ingreue")
+        print(Ingredient.objects.filter(name__icontains="guanciale"))
+        print(names)
         for name in names:
             results.append(Ingredient.objects.filter(name__icontains=name))
         if len(results):

@@ -249,7 +249,10 @@ def retrieve_results(query, filters):
             ingredients.append(i[1])
         else:
             not_ingredients.append(i[1])
+    print(ingredients)
     ingredients_ids = Ingredient.getIngredientsByNames(ingredients)
+    print("Inredient id")
+    print(ingredients_ids)
     not_ingredients_ids = Ingredient.getIngredientsByNames(not_ingredients)
     passed = query
     passed['ingredients'] = ingredients_ids
