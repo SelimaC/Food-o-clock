@@ -264,32 +264,31 @@ def retrieve_results(query, filters):
 # Rank search results
 def rank_results(recipes, user_details, query):
 
-    for r in recipes:
-        if user_details.diet and r.diet == user_details.diet:
-            r.content_score = 10
-        else:
-            r.content_score = 0
-
-        if user_details.cuisine and r.cuisine == user_details.cuisine:
-            r.content_score += 10
-        else:
-            r.content_score = 0
-
     tot_click = 0
     max_content_score = 0
-
+    i=0
+    print(len(recipes))
     for r in recipes:
+        i+=1
+        if user_details.diet and r.diet == user_details.diet:
+            r.user_score = 10
+        else:
+            r.user_score = 0
+        if user_details.cuisine and r.cuisine == user_details.cuisine:
+            r.user_score += 10
+        else:
+            r.user_score = 0
         if query['title'] != "":
             sim1 = title_similarity(r.title, query['title'])
             sim2 = title_similarity(query['title'], r.title)
             r.similarity_score = float((sim1 + sim2)/2)
         else:
             r.similarity_score = 0
-        r.content_score += r.similarity_score + r.rating
+        r.content_score = ((r.similarity_score*9/10) + (r.rating+ r.user_score)*1/10)
         tot_click += r.click
         if r.content_score > max_content_score:
             max_content_score = r.content_score
-
+    print(i)
     for r in recipes:
         if max_content_score> 0:
             r.content_score /= max_content_score

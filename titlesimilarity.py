@@ -64,18 +64,19 @@ def title_similarity(phrase1, phrase2):
 '''
 #Plug in the real query and title lists in the lists below.
 '''
-query = 'Mexican Corns on the Cob (Elote)'
+query = 'Creamy Chicken Lasagna'
 
 
-titles = ['Chips corn with capers', 'potato roast', 'quinoa salad', 'veggie salad with roast potato skins']
+titles = ['Amazing Italian Lemon Butter Chicken', 'Creamy Chicken Lasagna', 'Amazing Italian Lemon Butter Chicken', 'veggie salad with roast potato skins']
 
 scores = []
 for title in titles:
     sim1 = title_similarity(title, query)
     sim2 = title_similarity(query, title)
+
     scores.append(float((sim1+sim2) / 2))
 
-print(singularize('Corns'))
+print(scores)
 
 
 
