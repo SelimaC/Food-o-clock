@@ -1,7 +1,8 @@
 from nltk import word_tokenize, pos_tag
 from nltk.corpus import wordnet as wn
 from inflection import singularize
-
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
 def simpletag(tag):
 
     if tag.startswith('N'):
@@ -19,10 +20,11 @@ def simpletag(tag):
 
 def getsynset(word, tag):
     tag = simpletag(tag)
+
     if tag is None:
         return None
     try:
-        print( wn.synsets(word, tag))
+
         return wn.synsets(word, tag)[0]
     except:
         return None
@@ -32,7 +34,8 @@ def title_similarity(phrase1, phrase2):
 
     phrase1 = pos_tag(word_tokenize(phrase1))
     phrase2 = pos_tag(word_tokenize(phrase2))
-
+   # print(phrase1)
+   # print(phrase2)
     synset1 = []
     synset2 = []
 
@@ -47,6 +50,7 @@ def title_similarity(phrase1, phrase2):
             synset2.append(getsynset(*word))
 
     score, count = 0.0, 0
+
 
     for synset in synset1:
         sym = [synset.path_similarity(ss) for ss in synset2]
@@ -64,17 +68,17 @@ def title_similarity(phrase1, phrase2):
 '''
 #Plug in the real query and title lists in the lists below.
 '''
-query = 'Creamy Chicken Lasagna'
+query = 'Chicken Scarpariello'
 
 
-titles = ['Amazing Italian Lemon Butter Chicken', 'Creamy Chicken Lasagna', 'Amazing Italian Lemon Butter Chicken', 'veggie salad with roast potato skins']
-
+titles = ['Chicken Scarpariello','Italian stuffed chicken']
 scores = []
 for title in titles:
     sim1 = title_similarity(title, query)
     sim2 = title_similarity(query, title)
 
     scores.append(float((sim1+sim2) / 2))
+    print(fuzz.ratio(title,query)/100)
 
 print(scores)
 

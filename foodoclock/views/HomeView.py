@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from fuzzywuzzy import fuzz
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from foodoclock.models.Recipe import Recipe
@@ -279,22 +279,30 @@ def rank_results(recipes, user_details, query):
         else:
             r.user_score = 0
         if query['title'] != "":
-            sim1 = title_similarity(r.title, query['title'])
-            sim2 = title_similarity(query['title'], r.title)
-            r.similarity_score = float((sim1 + sim2)/2)
+            sim = fuzz.ratio(r.title, query['title'])
+            r.similarity_score = sim/100
         else:
             r.similarity_score = 0
         r.content_score = ((r.similarity_score*9/10) + (r.rating+ r.user_score)*1/10)
         tot_click += r.click
         if r.content_score > max_content_score:
             max_content_score = r.content_score
-    
+        if r.title == 'Chicken Scarpariello' or r.title=='Italian stuffed chicken':
+            print(r.title)
+            print(r.similarity_score)
+            print(r.rating)
+            print(r.user_score)
+    print(i)
     for r in recipes:
         if max_content_score> 0:
             r.content_score /= max_content_score
         r.feedback_score = r.click / tot_click
         r.rank_score = r.content_score**(1/2) + (0.5*r.feedback_score)
-
+        if r.title == 'Chicken Scarpariello' or r.title=='Italian stuffed chicken':
+            print(r.title)
+            print(r.rank_score)
+            print(r.content_score)
+            print(r.feedback_score)
 
     recipes = sorted(recipes, key=attrgetter('rank_score'), reverse=True)
 
@@ -315,67 +323,4 @@ def sort_results(results, sort_option):
 
     return results
 
-
-# Allowed tags
-def simpletag(tag):
-
-    if tag.startswith('N'):
-        return 'n'
-    if tag.startswith('V'):
-        return 'v'
-
-    if tag.startswith('J'):
-        return 'a'
-
-    if tag.startswith('R'):
-        return 'r'
-
-    return None
-
-
-# Get word synset
-def getsynset(word, tag):
-    tag = simpletag(tag)
-    if tag is None:
-        return None
-    try:
-        return wn.synsets(word, tag)[0]
-    except:
-        return None
-
-
-# Compute string similarity
-def title_similarity(phrase1, phrase2):
-
-    phrase1 = pos_tag(word_tokenize(phrase1))
-    phrase2 = pos_tag(word_tokenize(phrase2))
-    synset1 = []
-    synset2 = []
-    for word in phrase1:
-        syn = getsynset(*word)
-        if syn:
-            synset1.append(getsynset(*word))
-    for word in phrase2:
-        syn = getsynset(*word)
-        if syn:
-            synset2.append(getsynset(*word))
-
-    score, count = 0.0, 0
-
-    for synset in synset1:
-        sym = [synset.path_similarity(ss) for ss in synset2]
-        sym = [x for x in sym if x is not None]
-        if len(sym) > 0:
-            best_score = max([x for x in sym if x is not None])
-
-            if best_score is not None:
-                score = score + best_score
-                count += 1
-
-        # Average the values
-    if count > 0:
-        score /= count
-    else:
-        score = 0
-    return score
 
