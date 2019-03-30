@@ -84,8 +84,13 @@ def query_parser(query_string):
 
     first_plus = query_string.find("+")
     first_minus = query_string.find("-")
-    end_title = min(first_minus, first_plus)
-
+    if first_minus != -1 and first_plus != -1:
+        end_title = min(first_minus, first_plus)
+    elif first_minus != -1:
+        end_title = first_minus
+    else:
+        end_title = first_plus
+    print(end_title)
 
 
     if end_title == -1:
@@ -118,7 +123,7 @@ def query_parser(query_string):
 
     return query
 
-query=''
+query='carbonara pasta -onion'
 print(query_parser(query))
 
 print(0.5**(1/2))

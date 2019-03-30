@@ -156,7 +156,12 @@ def query_parser(query_string):
 
     first_plus = query_string.find("+")
     first_minus = query_string.find("-")
-    end_title = min(first_minus, first_plus)
+    if first_minus != -1 and first_plus != -1:
+        end_title = min(first_minus, first_plus)
+    elif first_minus != -1:
+        end_title = first_minus
+    else:
+        end_title = first_plus
 
     if end_title == -1:
         query["title"] = query_string
@@ -293,6 +298,8 @@ def rank_results(recipes, user_details, query):
             r.content_score /= max_content_score
         r.feedback_score = r.click / tot_click
         r.rank_score = r.content_score**(1/2) * r.feedback_score
+        print(r.title)
+        print(r.rank_score)
 
     recipes = sorted(recipes, key=attrgetter('rank_score'), reverse=True)
 

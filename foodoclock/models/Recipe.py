@@ -77,7 +77,7 @@ class Recipe(models.Model):
             result = result.filter(meal_type__in=MealType.getMealTypes(passed['meal']))
         if 'diet' in passed:
             result = result.filter(diet__in=Diet.getDiets(passed['diet']))
-        return result
+        return result.distinct()
 
     def __str__(self):
         return "Title: " + str(self.title)
