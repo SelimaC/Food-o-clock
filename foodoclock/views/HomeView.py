@@ -71,8 +71,6 @@ def home(request):
     diet_filters = []
     meal_filters = []
 
-
-
     if 'cuisine' in request.POST:
         filter['cuisine'] = request.POST.getlist('cuisine')
         cuisine_filters = filter['cuisine']
@@ -97,7 +95,6 @@ def home(request):
     query = ""
 
     # Get all recipes
-    recipes = Recipe.objects.all().order_by('?')
 
     if 'query' in request.POST or 'q' in request.GET:
         if request.POST and request.POST['query']:
@@ -106,7 +103,10 @@ def home(request):
             query = request.GET.get('q')
              
     parsed_query = query_parser(query)
+    print("Parsed query")
+    print(parsed_query)
     recipes = retrieve_results(parsed_query, filter)
+    print("Recipes" + str(len(recipes)))
 
     # Rank results
     recipes = rank_results(recipes, user_data, parsed_query)
@@ -162,7 +162,7 @@ def query_parser(query_string):
         query["title"] = query_string
     elif end_title != 0 :
         query["title"] = query_string[0:end_title-1]
-
+    print("Query parsing")
     tokens = pos_tag(word_tokenize(query['title']))
     for t in tokens:
         if t[0] != "":
@@ -237,6 +237,8 @@ def retrieve_results(query, filters):
     ingredients = []
     not_ingredients = []
 
+    print("Retrieving results")
+
     for i in query['ingredients']:
         if i[0]:
             ingredients.append(i[1])
@@ -249,6 +251,8 @@ def retrieve_results(query, filters):
     passed['not_ingredients'] = not_ingredients_ids
 
     token_ids = TitleToken.getTokensByNames(query['title_tokens'])
+    print("tokens ids")
+    print(len(token_ids))
     passed['token_ids'] = token_ids
     if len(filters) != 0:
         for k,v in filters.items():
