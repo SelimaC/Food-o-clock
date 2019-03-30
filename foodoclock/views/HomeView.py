@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from foodoclock.models.Recipe import Recipe
@@ -70,6 +71,8 @@ def home(request):
     diet_filters = []
     meal_filters = []
 
+
+
     if 'cuisine' in request.POST:
         filter['cuisine'] = request.POST.getlist('cuisine')
         cuisine_filters = filter['cuisine']
@@ -79,16 +82,16 @@ def home(request):
     if 'diet' in request.POST:
         filter['diet'] = request.POST.getlist('diet')
         diet_filters = filter['diet']
-
-    if 'cuisine' in request.GET and len(eval(request.GET.get('cuisine')))>0:
-        filter['cuisine'] = eval(request.GET.get('cuisine'))
-        cuisine_filters = filter['cuisine']
-    if 'meal' in request.GET and len(eval(request.GET.get('meal')))>0:
-        filter['meal'] = eval(request.GET.get('meal'))
-        meal_filters = filter['meal']
-    if 'diet' in request.GET and len(eval(request.GET.get('diet')))>0:
-        filter['diet'] = eval(request.GET.get('diet'))
-        diet_filters = filter['diet']
+    if not request.POST:
+        if 'cuisine' in request.GET and len(eval(request.GET.get('cuisine')))>0:
+            filter['cuisine'] = eval(request.GET.get('cuisine'))
+            cuisine_filters = filter['cuisine']
+        if 'meal' in request.GET and len(eval(request.GET.get('meal')))>0:
+            filter['meal'] = eval(request.GET.get('meal'))
+            meal_filters = filter['meal']
+        if 'diet' in request.GET and len(eval(request.GET.get('diet')))>0:
+            filter['diet'] = eval(request.GET.get('diet'))
+            diet_filters = filter['diet']
 
     # Search query has been performed
     query = ""
@@ -255,20 +258,16 @@ def retrieve_results(query, filters):
 # Rank search results
 def rank_results(recipes, user_details, query):
 
-    if user_details.diet:
-        for r in recipes:
-            if r.diet == user_details.diet:
-                r.content_score = 10
-            else:
-                r.content_score = 0
+    for r in recipes:
+        if user_details.diet and r.diet == user_details.diet:
+            r.content_score = 10
+        else:
+            r.content_score = 0
 
-
-    if user_details.cuisine:
-        for r in recipes:
-            if r.cuisine == user_details.cuisine:
-                r.content_score += 10
-            else:
-                r.content_score +=0
+        if user_details.cuisine and r.cuisine == user_details.cuisine:
+            r.content_score += 10
+        else:
+            r.content_score = 0
 
     tot_click = 0
     max_content_score = 0
@@ -311,6 +310,7 @@ def sort_results(results, sort_option):
     return results
 
 
+# Allowed tags
 def simpletag(tag):
 
     if tag.startswith('N'):
@@ -327,6 +327,7 @@ def simpletag(tag):
     return None
 
 
+# Get word synset
 def getsynset(word, tag):
     tag = simpletag(tag)
     if tag is None:
