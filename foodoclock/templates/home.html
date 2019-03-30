@@ -369,8 +369,8 @@
           <div class="pagination" align="middle">
                 <span class="step-links">
                 {% if rows.has_previous %}
-                    <a href="?page=1&q={{ query|urlencode }}&s={{ sort_selected|urlencode }}">&laquo; first</a>
-                    <a href="?page={{ rows.previous_page_number }}&q={{ query|urlencode }}&s={{ sort_selected|urlencode }}">previous</a>
+                    <a href="?page=1&q={{ query|urlencode }}&s={{ sort_selected|urlencode }}&meal={{ filter_meal|urlencode }}&diet={{ filter_diet|urlencode }}&cuisine={{ filter_cuisine|urlencode }}">&laquo; first</a>
+                    <a href="?page={{ rows.previous_page_number }}&q={{ query|urlencode }}&s={{ sort_selected|urlencode }}&meal={{ filter_meal|urlencode }}&diet={{ filter_diet|urlencode }}&cuisine={{ filter_cuisine|urlencode }}">previous</a>
                 {% endif %}
 
                 <span class="current">
@@ -378,8 +378,8 @@
                 </span>
 
                 {% if rows.has_next %}
-                    <a href="?page={{ rows.next_page_number }}&q={{ query|urlencode }}&s={{ sort_selected|urlencode }}">next</a>
-                    <a href="?page={{ rows.paginator.num_pages }}&q={{ query|urlencode }}&s={{ sort_selected|urlencode }}">last &raquo;</a>
+                    <a href="?page={{ rows.next_page_number }}&q={{ query|urlencode }}&s={{ sort_selected|urlencode }}&meal={{ filter_meal|urlencode }}&diet={{ filter_diet|urlencode }}&cuisine={{ filter_cuisine|urlencode }}">next</a>
+                    <a href="?page={{ rows.paginator.num_pages }}&q={{ query|urlencode }}&s={{ sort_selected|urlencode }}&meal={{ filter_meal|urlencode }}&diet={{ filter_diet|urlencode }}&cuisine={{ filter_cuisine|urlencode }}">last &raquo;</a>
                 {% endif %}
                 </span>
           </div>

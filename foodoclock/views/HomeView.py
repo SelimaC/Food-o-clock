@@ -80,14 +80,14 @@ def home(request):
         filter['diet'] = request.POST.getlist('diet')
         diet_filters = filter['diet']
 
-    if 'cuisine' in request.GET:
-        filter['cuisine'] = request.GET.getlist('cuisine')
+    if 'cuisine' in request.GET and len(eval(request.GET.get('cuisine')))>0:
+        filter['cuisine'] = eval(request.GET.get('cuisine'))
         cuisine_filters = filter['cuisine']
-    if 'meal' in request.GET:
-        filter['meal'] = request.GET.getlist('meal')
+    if 'meal' in request.GET and len(eval(request.GET.get('meal')))>0:
+        filter['meal'] = eval(request.GET.get('meal'))
         meal_filters = filter['meal']
-    if 'diet' in request.GET:
-        filter['diet'] = request.GET.getlist('diet')
+    if 'diet' in request.GET and len(eval(request.GET.get('diet')))>0:
+        filter['diet'] = eval(request.GET.get('diet'))
         diet_filters = filter['diet']
 
     # Search query has been performed
