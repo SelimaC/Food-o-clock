@@ -278,7 +278,7 @@
 
 
         <br>
-        {% if rows %}
+
         </br></br>
 
         <div class="Options" align="middle">
@@ -301,7 +301,7 @@
                 <h5>Cuisine</h5>
                 {% for c in cuisine %}
                     <label class="container">{{c.cuisine}}
-                      <input type="checkbox" name="cuisine" value="{{c.cuisine}}">
+                      <input {% if c.cuisine in filter_cuisine %} checked="checked"{% endif %} type="checkbox" name="cuisine" value="{{c.cuisine}}">
                       <span class="checkmark"></span>
                     </label>
                 {% endfor%}
@@ -311,7 +311,7 @@
                 <h5>Course Types</h5>
                 {% for m in meals %}
                     <label class="container">{{m.type}}
-                      <input type="checkbox" name="meal" value="{{m.type}}">
+                      <input {% if m.type in filter_meal %} checked="checked"{% endif %} type="checkbox" name="meal" value="{{m.type}}">
                       <span class="checkmark"></span>
                     </label>
                 {% endfor%}
@@ -321,7 +321,7 @@
                 <h5>Diet</h5>
                 {% for d in diets %}
                     <label class="container">{{d.diet}}
-                        <input type="checkbox" name="diet" value="{{d.diet}}">
+                        <input {% if d.diet in filter_diet %} checked="checked"{% endif %} type="checkbox" name="diet" value="{{d.diet}}">
                         <span class="checkmark"></span>
                     </label>
                 {% endfor%}
@@ -330,6 +330,7 @@
 
     </form>
     <br><hr>
+    {% if rows %}
     <div  id="results">
           {% for r in rows %}
             <a href="{{r.link}}" class="clickableContainer"  target="_blank" title="{{r.title}}">

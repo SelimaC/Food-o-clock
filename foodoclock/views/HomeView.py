@@ -66,12 +66,29 @@ def home(request):
 
     # Filtering
     filter = {}
+    cuisine_filters = []
+    diet_filters = []
+    meal_filters = []
+
     if 'cuisine' in request.POST:
         filter['cuisine'] = request.POST.getlist('cuisine')
+        cuisine_filters = filter['cuisine']
     if 'meal' in request.POST:
         filter['meal'] = request.POST.getlist('meal')
+        meal_filters = filter['meal']
     if 'diet' in request.POST:
         filter['diet'] = request.POST.getlist('diet')
+        diet_filters = filter['diet']
+
+    if 'cuisine' in request.GET:
+        filter['cuisine'] = request.GET.getlist('cuisine')
+        cuisine_filters = filter['cuisine']
+    if 'meal' in request.GET:
+        filter['meal'] = request.GET.getlist('meal')
+        meal_filters = filter['meal']
+    if 'diet' in request.GET:
+        filter['diet'] = request.GET.getlist('diet')
+        diet_filters = filter['diet']
 
     # Search query has been performed
     query = ""
@@ -87,6 +104,9 @@ def home(request):
              
     parsed_query = query_parser(query)
     recipes = retrieve_results(parsed_query, filter)
+
+    # Rank results
+    recipes = rank_results(recipes, user_data, parsed_query)
 
     sort = request.POST.get('sort', None)
     if 's' in request.GET:
@@ -110,8 +130,6 @@ def home(request):
             r.meta_description = ' '.join(r.meta_description.split()[0:50]) + ' ...'
     total = len(recipes)
 
-    # Rank results
-    recipes = rank_results(recipes, user_data, parsed_query)
     # Prepare paginator for search results
     paginator = Paginator(recipes, 10)  # Show 10 contacts per page
     page = request.GET.get('page')
@@ -120,7 +138,9 @@ def home(request):
     # Render results
     return render(request, '../templates/home.html',
                       {'page': 1, 'rows': rows, 'total': total, 'sort': sort_options, 'cuisine': cuisines,
-                       'meals': meals, 'diets': diets, 'query': query, 'sort_selected': sort})
+                       'meals': meals, 'diets': diets, 'query': query, 'sort_selected': sort,
+                       'filter_cuisine': cuisine_filters, 'filter_diet': diet_filters,
+                       'filter_meal': meal_filters})
 
 # Parse user query
 def query_parser(query_string):
@@ -280,16 +300,13 @@ def rank_results(recipes, user_details, query):
 def sort_results(results, sort_option):
 
     if sort_option == 'Title':
-        return results.order_by('title')
+        return sorted(results, key=attrgetter('title'))
 
     if sort_option == 'Time':
-        return results.extra(
-            select={'fieldsum':'preparation_time + cook_time'},
-            order_by=('fieldsum',)
-        )
+        return sorted(results, key=attrgetter('preparation_time, cook_time'))
 
     if sort_option == 'Rating':
-        return results.order_by('-rating')
+        return sorted(results, key=attrgetter('rating'), reverse=True)
 
     return results
 
