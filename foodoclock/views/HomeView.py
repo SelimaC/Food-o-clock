@@ -271,11 +271,11 @@ def rank_results(recipes, user_details, query):
     for r in recipes:
         i+=1
         if user_details.diet and r.diet == user_details.diet:
-            r.user_score = 10
+            r.user_score = 5
         else:
             r.user_score = 0
         if user_details.cuisine and r.cuisine == user_details.cuisine:
-            r.user_score += 10
+            r.user_score += 5
         else:
             r.user_score = 0
         if query['title'] != "":
@@ -293,7 +293,11 @@ def rank_results(recipes, user_details, query):
         if max_content_score> 0:
             r.content_score /= max_content_score
         r.feedback_score = r.click / tot_click
-        r.rank_score = r.content_score**(1/2) * r.feedback_score
+        r.rank_score = r.content_score**(1/2) + (0.5*r.feedback_score)
+        print(r.title)
+        print(r.rank_score)
+        print(r.content_score)
+        print(r.feedback_score)
 
     recipes = sorted(recipes, key=attrgetter('rank_score'), reverse=True)
 
