@@ -287,22 +287,14 @@ def rank_results(recipes, user_details, query):
         tot_click += r.click
         if r.content_score > max_content_score:
             max_content_score = r.content_score
-        if r.title == 'Chicken Scarpariello' or r.title=='Italian stuffed chicken':
-            print(r.title)
-            print(r.similarity_score)
-            print(r.rating)
-            print(r.user_score)
-    print(i)
+
+
     for r in recipes:
         if max_content_score> 0:
             r.content_score /= max_content_score
         r.feedback_score = r.click / tot_click
         r.rank_score = r.content_score**(1/2) + (0.5*r.feedback_score)
-        if r.title == 'Chicken Scarpariello' or r.title=='Italian stuffed chicken':
-            print(r.title)
-            print(r.rank_score)
-            print(r.content_score)
-            print(r.feedback_score)
+
 
     recipes = sorted(recipes, key=attrgetter('rank_score'), reverse=True)
 

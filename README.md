@@ -23,7 +23,7 @@ username: `admin`
 password: `master2019` -->
 
 # Create an account
-To accsess the search engine you will need to create an account first.
+To access the search engine you will need to create an account first.
 
 # Install new apps
 `python settings.py install`
