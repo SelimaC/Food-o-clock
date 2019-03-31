@@ -13,7 +13,7 @@ class Diet(models.Model):
         for name in diets:
             results.append(Diet.objects.filter(diet=name))
         if len(results):
-            final_results = results[0].intersection(*results[1:])
+            final_results = results[0].union(*results[1:])
             return final_results.values_list('pk', flat=True)
         else:
             return []

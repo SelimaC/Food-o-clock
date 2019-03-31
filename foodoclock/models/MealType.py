@@ -13,7 +13,7 @@ class MealType(models.Model):
         for name in meals:
             results.append(MealType.objects.filter(type=name))
         if len(results):
-            final_results = results[0].intersection(*results[1:])
+            final_results = results[0].union(*results[1:])
             return final_results.values_list('pk', flat=True)
         else:
             return []
