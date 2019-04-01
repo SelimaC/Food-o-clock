@@ -283,7 +283,7 @@ def rank_results(recipes, user_details, query):
         else:
             r.similarity_score = 0
 
-        if 'ingredients' in query:
+        if 'ingredients' in query and len(query['ingredients']) > 0:
             r.ingredient_score = len(r.ingredients.all().values_list('pk', flat=True).intersection(query['ingredients']))
         else:
             r.ingredient_score = 0
