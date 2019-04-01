@@ -266,17 +266,18 @@ def retrieve_results(query, filters):
 def rank_results(recipes, user_details, query):
     tot_click = 0
     max_content_score = 0
+    max_preference_score = 0
 
     print(len(recipes))
     for r in recipes:
         if user_details.diet and r.diet == user_details.diet:
-            r.user_score = 5
+            r.user_preference_score = 10
         else:
-            r.user_score = 0
+            r.user_preference_score = 0
         if user_details.cuisine and r.cuisine == user_details.cuisine:
-            r.user_score += 5
+            r.user_preference_score += 5
         else:
-            r.user_score = 0
+            r.user_preference_score = 0
         if query['title'] != "":
             sim = fuzz.ratio(r.title, query['title'])
             r.similarity_score = sim/100
@@ -285,22 +286,27 @@ def rank_results(recipes, user_details, query):
 
         if r.similarity_score == 1:
             r.similarity_score *= 2
+
         if 'ingredients' in query and len(query['ingredients']) > 0:
             r.ingredient_score = len(r.ingredients.all().values_list('pk', flat=True).intersection(query['ingredients']))
         else:
             r.ingredient_score = 0
-        r.content_score = ((r.similarity_score + r.ingredient_score*9/10) + (r.rating + r.user_score)*1/10)
+        r.content_score = (r.similarity_score *2/3 + r.ingredient_score*1/3)
         tot_click += r.click
         if r.content_score > max_content_score:
             max_content_score = r.content_score
+        if r.user_preference_score > max_preference_score:
+            max_preference_score = r.user_preference_score
 
     for r in recipes:
-        if max_content_score> 0:
+        if max_content_score > 0:
             r.content_score /= max_content_score
-        r.feedback_score = r.click / tot_click
-        r.rank_score = r.content_score**(1/2) + (0.5*r.feedback_score)
+        if max_preference_score > 0:
+            r.user_preference_score /= max_preference_score
+        r.feedback_score = r.click / tot_click + r.rating/5
+        r.rank_score = r.content_score + r.user_preference_score + r.feedback_score
 
-    recipes = sorted(recipes, key=attrgetter('rank_score'), reverse=True)
+    recipes = sorted(recipes, key=attrgetter('content_score', 'feedback_score', 'user_preference_score'), reverse=True)
 
     return recipes
 
