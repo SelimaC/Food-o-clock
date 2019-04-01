@@ -6,16 +6,24 @@ from sklearn.decomposition import PCA
 from sklearn.naive_bayes import ComplementNB
 from sklearn import svm
 import re
+import matplotlib.pyplot as plt
 from inflection import singularize
 import sklearn
 import unidecode
 from textblob import TextBlob
 #from nltk.corpus import stopwords
 
-foodfile = open("select_ing.txt", "r")
+foodfile = open("ingredients.txt", "r")
 ing = foodfile.read().split('\n')
 foodfile.close()
 
+
+cuisine = ['italian', 'british', 'southern', 'vietnamese', 'greek', 'french', 'southwestern', 'kid-friendly', 'hawaiian', 'asian', 'korean', 'japanese', 'thai', 'cuban', 'irish', 'brazilian', 'american', 'barbecue', 'cajun'
+, 'russian', 'filipino', 'jamaican', 'german', 'hungarian', 'portuguese', 'indian', 'spanish', 'chinese', 'mediterranean', 'mexican', 'moroccan']
+
+
+
+'''
 foodfile = open("basicfood.txt", "r")
 allow = foodfile.read().split('\n')
 foodfile.close()
@@ -34,9 +42,6 @@ stopWords = set(stopWords)
 tags = ['JJ', 'JJS', 'JJR', 'NN', 'NNS', 'NNP', 'NNPS']
 for ss in stopfoods:
     stopWords.add(ss)
-
-cuisine = ['italian', 'british', 'southern', 'vietnamese', 'greek', 'french', 'southwestern', 'kid-friendly', 'hawaiian', 'asian', 'korean', 'japanese', 'thai', 'cuban', 'irish', 'brazilian', 'american', 'barbecue', 'cajun'
-, 'russian', 'filipino', 'jamaican', 'german', 'hungarian', 'portuguese', 'indian', 'spanish', 'chinese', 'mediterranean', 'mexican', 'moroccan']
 
 def stan(ing):
     temp = ''
@@ -111,7 +116,9 @@ for i in range(len(data)):
     testdata.append(feature)
     del feature
 
+
 del data
+'''
 print("test features done")
 with open('traindata1.json', "r", encoding="utf8") as read_file:
     train1 = json.load(read_file)
@@ -187,7 +194,22 @@ for i in range(len(test2)):
 
 del test2
 print("done")
+var = []
+comp = [4000, 3800, 3500, 3300, 3000, 2700, 2500, 2200, 2000, 1900, 1700, 1500, 1300, 1000, 990, 950, 930, 900, 850, 830, 800, 760, 740, 700, 650, 600, 580, 550, 500]
+for c in comp:
+    print(c)
+    pca = PCA(n_components=c)
+    print("fit")
+    X_pca = pca.fit_transform(train)
+    print("done")
+    var.append(pca.explained_variance_ratio_)
 
+plt.plot(comp, var)
+plt.title("PCA")
+plt.xlabel("Components")
+plt.ylabel("Explained Variance Ratio")
+plt.show()
+'''
 clf = svm.SVC(gamma = 'scale')
 clf.fit(train, trainlabel)
 print("fitted")
@@ -195,3 +217,4 @@ print("fitted")
 ans = clf.predict(testdata)
 
 print("Accuracy:",clf.score(testdata, testlabel))
+'''
