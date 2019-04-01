@@ -283,11 +283,13 @@ def rank_results(recipes, user_details, query):
         else:
             r.similarity_score = 0
 
+        if r.similarity_score == 1:
+            r.similarity_score *= 2
         if 'ingredients' in query and len(query['ingredients']) > 0:
             r.ingredient_score = len(r.ingredients.all().values_list('pk', flat=True).intersection(query['ingredients']))
         else:
             r.ingredient_score = 0
-        r.content_score = ((r.similarity_score + r.ingredient_score*9/10) + (r.rating+ r.user_score)*1/10)
+        r.content_score = ((r.similarity_score + r.ingredient_score*9/10) + (r.rating + r.user_score)*1/10)
         tot_click += r.click
         if r.content_score > max_content_score:
             max_content_score = r.content_score
