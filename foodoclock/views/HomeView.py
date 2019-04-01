@@ -187,13 +187,13 @@ def query_parser(query_string):
         ingredients.append((False, i[1]))
     query['ingredients'] = standardize(ingredients)
 
-
     return query
+
 
 # Standardize query ingredients
 def standardize(ingredients):
     recipe = []
-    for flag,ing in ingredients:
+    for flag, ing in ingredients:
         temp = ''
 
         ing = ing.lower()
@@ -230,7 +230,6 @@ def standardize(ingredients):
         temp = temp.strip()
 
         if temp:
-            recipe.append(temp)
             recipe.append((flag,temp))
 
     return recipe
@@ -250,6 +249,7 @@ def retrieve_results(query, filters):
 
     not_ingredients_ids = Ingredient.getIngredientsByNames(not_ingredients)
     passed = query
+    print(ingredients_ids)
     passed['ingredients'] = ingredients_ids
     passed['not_ingredients'] = not_ingredients_ids
 
@@ -261,15 +261,14 @@ def retrieve_results(query, filters):
             passed[k] = v
     return Recipe.getRecipes(passed)
 
+
 # Rank search results
 def rank_results(recipes, user_details, query):
-
     tot_click = 0
     max_content_score = 0
-    i=0
+
     print(len(recipes))
     for r in recipes:
-        i+=1
         if user_details.diet and r.diet == user_details.diet:
             r.user_score = 5
         else:
@@ -283,18 +282,21 @@ def rank_results(recipes, user_details, query):
             r.similarity_score = sim/100
         else:
             r.similarity_score = 0
-        r.content_score = ((r.similarity_score*9/10) + (r.rating+ r.user_score)*1/10)
+
+        if 'ingredients' in query and len(query['ingredients']) > 0:
+            r.ingredient_score = len(r.ingredients.all().values_list('pk', flat=True).intersection(query['ingredients']))
+        else:
+            r.ingredient_score = 0
+        r.content_score = ((r.similarity_score + r.ingredient_score*9/10) + (r.rating+ r.user_score)*1/10)
         tot_click += r.click
         if r.content_score > max_content_score:
             max_content_score = r.content_score
-
 
     for r in recipes:
         if max_content_score> 0:
             r.content_score /= max_content_score
         r.feedback_score = r.click / tot_click
         r.rank_score = r.content_score**(1/2) + (0.5*r.feedback_score)
-
 
     recipes = sorted(recipes, key=attrgetter('rank_score'), reverse=True)
 

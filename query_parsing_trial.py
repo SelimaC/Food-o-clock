@@ -123,7 +123,7 @@ def query_parser(query_string):
 
     return query
 
-query='carbonara pasta -onion'
+query='+pasta +onion'
 print(query_parser(query))
 
 print(0.5**(1/2))
