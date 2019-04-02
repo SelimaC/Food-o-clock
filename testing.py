@@ -195,19 +195,15 @@ for i in range(len(test2)):
 del test2
 print("done")
 var = []
-comp = [4000, 3800, 3500, 3300, 3000, 2700, 2500, 2200, 2000, 1900, 1700, 1500, 1300, 1000, 990, 950, 930, 900, 850, 830, 800, 760, 740, 700, 650, 600, 580, 550, 500]
-for c in comp:
-    print(c)
-    pca = PCA(n_components=c)
-    print("fit")
-    X_pca = pca.fit_transform(train)
-    print("done")
-    var.append(pca.explained_variance_ratio_)
+comp = [4000, 3800, 3500, 3300, 3000, 2700, 2500, 2200,
+        2000, 1900, 1700, 1500, 1300, 1000, 990, 950, 930, 900, 850, 830, 800, 760, 740, 700, 650, 600, 580, 550, 500]
 
-plt.plot(comp, var)
-plt.title("PCA")
-plt.xlabel("Components")
-plt.ylabel("Explained Variance Ratio")
+
+pca = PCA(4000)
+pca_full = pca.fit(train)
+plt.plot(np.cumsum(pca_full.explained_variance_ratio_))
+plt.xlabel('# of components')
+plt.ylabel('Cumulative explained variance')
 plt.show()
 '''
 clf = svm.SVC(gamma = 'scale')

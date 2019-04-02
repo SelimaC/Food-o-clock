@@ -60,16 +60,18 @@ class Recipe(models.Model):
         return Recipe.objects.filter(ingredients__in=ingredients).exclude(ingredients__in=not_ingredients)
     
     @classmethod
-    def getRecipes(cls, passed):
+    def getRecipes(cls, passed, ingredients_ids, not_ingredients_ids):
         print('-----------')
         print(passed)
         result = Recipe.objects.all()
         if passed['token_ids']:
             result = Recipe.objects.filter(title_tokens__in=passed['token_ids'])
-        if passed['ingredients']:
-            result = result.filter(ingredients__in=passed['ingredients'])
-        if passed['not_ingredients']:
-            result = result.exclude(ingredients__in=passed['not_ingredients'])
+        if ingredients_ids:
+            for name in ingredients_ids:
+                result = result.filter(ingredients__in=ingredients_ids[name])
+        if not_ingredients_ids:
+            for name in not_ingredients_ids:
+                result = result.exclude(ingredients__in=not_ingredients_ids[name])
         if 'cuisine' in passed:
             print(passed['cuisine'])
             result = result.filter(cuisine__in=Cuisine.getCuisineByNames(passed['cuisine']))

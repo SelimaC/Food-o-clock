@@ -68,19 +68,21 @@ def title_similarity(phrase1, phrase2):
 '''
 #Plug in the real query and title lists in the lists below.
 '''
-query = 'Chicken Scarpariello'
+query = 'Asian Beef'
+import jellyfish
 
-
-titles = ['Chicken Scarpariello','Italian stuffed chicken']
+titles = ['Asian Beef with Snow Peas','Asian greens']
 scores = []
 for title in titles:
     sim1 = title_similarity(title, query)
     sim2 = title_similarity(query, title)
 
     scores.append(float((sim1+sim2) / 2))
-    print(fuzz.ratio(title,query)/100)
+    print(fuzz.ratio(title.lower(),query.lower())/100)
+    print(jellyfish.levenshtein_distance(title, query))
 
 print(scores)
 
+print(jellyfish.levenshtein_distance('jellyfish', 'smellyfish'))
 
 

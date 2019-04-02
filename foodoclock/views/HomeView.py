@@ -245,11 +245,18 @@ def retrieve_results(query, filters):
         else:
             not_ingredients.append(i[1])
 
-    ingredients_ids = Ingredient.getIngredientsByNames(ingredients)
+    ingredients_ids = {}
+    for name in ingredients:
+        ingredients_ids[name] = Ingredient.getIngredientsByName(name)
 
-    not_ingredients_ids = Ingredient.getIngredientsByNames(not_ingredients)
+    not_ingredients_ids = {}
+    for name in not_ingredients:
+        not_ingredients_ids[name] = Ingredient.getIngredientsByName(name)
+
+    print(len(ingredients_ids))
+    print(len(not_ingredients_ids))
     passed = query
-    print(ingredients_ids)
+
     passed['ingredients'] = ingredients_ids
     passed['not_ingredients'] = not_ingredients_ids
 
@@ -259,7 +266,7 @@ def retrieve_results(query, filters):
     if len(filters) != 0:
         for k,v in filters.items():
             passed[k] = v
-    return Recipe.getRecipes(passed)
+    return Recipe.getRecipes(passed, ingredients_ids, not_ingredients_ids)
 
 
 # Rank search results
@@ -287,11 +294,7 @@ def rank_results(recipes, user_details, query):
         if r.similarity_score == 1:
             r.similarity_score *= 2
 
-        if 'ingredients' in query and len(query['ingredients']) > 0:
-            r.ingredient_score = len(r.ingredients.all().values_list('pk', flat=True).intersection(query['ingredients']))
-        else:
-            r.ingredient_score = 0
-        r.content_score = (r.similarity_score *2/3 + r.ingredient_score*1/3)
+        r.content_score = r.similarity_score
         tot_click += r.click
         if r.content_score > max_content_score:
             max_content_score = r.content_score

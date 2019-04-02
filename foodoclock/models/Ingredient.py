@@ -34,3 +34,9 @@ class Ingredient(models.Model):
             return final_results.values_list('pk', flat=True)
         else:
             return []
+
+
+    @ classmethod
+    def getIngredientsByName(cls, name):
+        result = (Ingredient.objects.filter(name__icontains=name))
+        return result.values_list('pk', flat=True)
